@@ -5,13 +5,13 @@ namespace PowerShellLog
 {
   public class AzureSqlPoc0
   {
-    public static string QueryUsingTSqlExample()
+    public static string QueryUsingTSqlExample(string username, string password)
     {
       var rv = "Old .net 4.8 ";
 
       //try
       //{
-      //  using (var connection = new SqlConnection(new SqlConnectionStringBuilder { DataSource = "sqs.database.windows.net", UserID = "azuresqluser", Password = ";lkj;lkj99", InitialCatalog = "PowerShellLog" }.ConnectionString))
+      //  using (var connection = new SqlConnection(new SqlConnectionStringBuilder { DataSource = "sqs.database.windows.net", UserID = username, Password = password, InitialCatalog = "PowerShellLog" }.ConnectionString))
       //  {
       //    rv += ($"\nQuery data example: \n\t{connection.ConnectionString}\n\n");
 

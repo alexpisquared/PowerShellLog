@@ -1,7 +1,5 @@
-﻿using System;
-using AAV.Sys.Helpers;
+﻿using AAV.Sys.Helpers;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace PowerShellLog.Db.DbModel
 {
@@ -9,10 +7,11 @@ namespace PowerShellLog.Db.DbModel
   {
     const string _dbName = "PowerShellLog";
     const string _dbSubP = @"Public\AppData\PowerShellLog\";
-    static string
+    static readonly string _un = "//todo:", _pw = "//todo:";
+    static readonly string
       lclFl = $@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename={OneDrive.Folder($@"{_dbSubP}{_dbName}.mdf")};Integrated Security=True;Connect Timeout=17;",
       exprs = $@"data source=.\sqlexpress;initial catalog={_dbName};integrated security=True;MultipleActiveResultSets=True;App=EntityFramework",
-      azure = $"data source=sqs.database.windows.net;initial catalog={_dbName};persist security info=True;user id=azuresqluser;password=\";lkj;lkj99\";MultipleActiveResultSets=True;App=EntityFramework",
+      azure = $"data source=sqs.database.windows.net;initial catalog={_dbName};persist security info=True;user id={_un};password=\"{_pw}\";MultipleActiveResultSets=True;App=EntityFramework",
       confg = "name=A0DbContext";
     readonly string _constr;
 
@@ -25,7 +24,7 @@ namespace PowerShellLog.Db.DbModel
     static A0DbContext _Confg => new A0DbContext(confg);
 
     public A0DbContext() : this(constr: lclFl) { } // for EF-based controllers: parameterless ctor is needed!!!
-    A0DbContext(string constr) : base() => _constr = constr;    
+    A0DbContext(string constr) : base() => _constr = constr;
 
     public A0DbContext(DbContextOptions<A0DbContext> options)
         : base(options)
@@ -41,7 +40,7 @@ namespace PowerShellLog.Db.DbModel
     {
       if (!optionsBuilder.IsConfigured)
       {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+        //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
         optionsBuilder.UseSqlServer(_constr); // ("Server=.\\SQLExpress;Database=PowerShellLog;Trusted_Connection=True;");
       }
     }
