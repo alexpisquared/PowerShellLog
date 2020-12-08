@@ -1,0 +1,84 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PowerShellLog"
+        xmlns:DbModel="clr-namespace:PowerShellLog.Db.DbModel;assembly=PowerShellLog.Db" x:Class="PowerShellLog.Window1"
+        mc:Ignorable="d"
+        Title="Window1" Height="450" Width="1800" Loaded="Window_Loaded">
+  <Window.Resources>
+    <CollectionViewSource x:Key="cmdViewSource" d:DesignSource="{d:DesignInstance {x:Type DbModel:Cmd}, CreateList=True}"/>
+    <CollectionViewSource x:Key="cmdLogsViewSource" Source="{Binding Logs, Source={StaticResource cmdViewSource}}"/>
+    <CollectionViewSource x:Key="logViewSource" d:DesignSource="{d:DesignInstance {x:Type DbModel:Log}, CreateList=True}"/>
+    <CollectionViewSource x:Key="usageVwViewSource" d:DesignSource="{d:DesignInstance {x:Type DbModel:UsageVw}, CreateList=True}"/>
+  </Window.Resources>
+  <Grid DataContext="{StaticResource cmdViewSource}">
+
+    <DataGrid x:Name="cmdDataGrid" RowDetailsVisibilityMode="VisibleWhenSelected" Margin="40,64,0,155" ItemsSource="{Binding}" EnableRowVirtualization="True" AutoGenerateColumns="False" HorizontalAlignment="Left" Width="422">
+      <DataGrid.Columns>
+        <DataGridTemplateColumn x:Name="addedAtColumn" Width="SizeToHeader" Header="Added At">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <DatePicker SelectedDate="{Binding AddedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn x:Name="commandTextColumn" Width="SizeToHeader" Header="Command Text" Binding="{Binding CommandText}"/>
+        <DataGridTextColumn x:Name="idColumn" Width="SizeToHeader" Header="Id" Binding="{Binding Id}"/>
+        <DataGridTextColumn x:Name="noteColumn" Width="SizeToHeader" Header="Note" Binding="{Binding Note}"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <DataGrid x:Name="logsDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" Height="200" ItemsSource="{Binding Source={StaticResource cmdLogsViewSource}}" Margin="51,0,0,-65" RowDetailsVisibilityMode="VisibleWhenSelected" VerticalAlignment="Bottom" d:LayoutOverrides="Height" HorizontalAlignment="Left" Width="470">
+      <DataGrid.Columns>
+        <DataGridTemplateColumn x:Name="addedAtColumn1" Header="Added At" Width="SizeToHeader">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <DatePicker SelectedDate="{Binding AddedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn x:Name="commandIdColumn" Binding="{Binding CommandId}" Header="Command Id" Width="SizeToHeader"/>
+        <DataGridTextColumn x:Name="idColumn1" Binding="{Binding Id}" Header="Id" Width="SizeToHeader"/>
+        <DataGridTextColumn x:Name="lineNumColumn" Binding="{Binding LineNum}" Header="Line Num" Width="SizeToHeader"/>
+        <DataGridTextColumn x:Name="machineColumn" Binding="{Binding Machine}" Header="Machine" Width="SizeToHeader"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <DataGrid x:Name="logDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource logViewSource}}" Margin="616,64,776,155" RowDetailsVisibilityMode="VisibleWhenSelected" Width="400">
+      <DataGrid.Columns>
+        <DataGridTemplateColumn x:Name="addedAtColumn2" Header="Added At" Width="SizeToHeader">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <DatePicker SelectedDate="{Binding AddedAt, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn x:Name="commandIdColumn1" Binding="{Binding CommandId}" Header="Command Id" Width="SizeToHeader"/>
+        <DataGridTextColumn x:Name="idColumn2" Binding="{Binding Id}" Header="Id" Width="SizeToHeader"/>
+        <DataGridTextColumn x:Name="lineNumColumn1" Binding="{Binding LineNum}" Header="Line Num" Width="SizeToHeader"/>
+        <DataGridTextColumn x:Name="machineColumn1" Binding="{Binding Machine}" Header="Machine" Width="SizeToHeader"/>
+      </DataGrid.Columns>
+    </DataGrid>
+    <DataGrid x:Name="usageVwDataGrid" AutoGenerateColumns="False" EnableRowVirtualization="True" HorizontalAlignment="Right" ItemsSource="{Binding Source={StaticResource usageVwViewSource}}" Margin="0,80,283,139" RowDetailsVisibilityMode="VisibleWhenSelected" Width="400" d:LayoutOverrides="Width">
+      <DataGrid.Columns>
+        <DataGridTextColumn x:Name="commandTextColumn1" Binding="{Binding CommandText}" Header="Command Text" Width="SizeToHeader"/>
+        <DataGridTemplateColumn x:Name="firstTimeColumn" Header="First Time" Width="SizeToHeader">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <DatePicker SelectedDate="{Binding FirstTime, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTemplateColumn x:Name="lastTimeColumn" Header="Last Time" Width="SizeToHeader">
+          <DataGridTemplateColumn.CellTemplate>
+            <DataTemplate>
+              <DatePicker SelectedDate="{Binding LastTime, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"/>
+            </DataTemplate>
+          </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <DataGridTextColumn x:Name="timesUsedColumn" Binding="{Binding TimesUsed}" Header="Times Used" Width="SizeToHeader"/>
+      </DataGrid.Columns>
+    </DataGrid>
+
+  </Grid>
+</Window>

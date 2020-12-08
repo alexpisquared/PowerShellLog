@@ -1,0 +1,79 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup Label="Globals">
+    <SccProjectName>%24/C/ef/PowerShellLog</SccProjectName>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
+    <SccAuxPath>https://dev.azure.com/alexpi</SccAuxPath>
+    <SccLocalPath>.</SccLocalPath>
+    <Platforms>AnyCPU;x64</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>powershell.ico</ApplicationIcon>
+
+    <LangVersion>8.0</LangVersion>
+    <Nullable>enable</Nullable>
+
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DefineConstants>TRACE;DI</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>TRACE;DI</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="AsLink2\**" />
+    <EmbeddedResource Remove="AsLink2\**" />
+    <None Remove="AsLink2\**" />
+    <Page Remove="AsLink2\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="powershell.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\..\AAV.Shared\Src\AsLink\UI\HighlightableTextBlock.cs" Link="AsLink\HighlightableTextBlock.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.Sys\AAV.Sys.csproj" />
+    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.UI\AAV.UI.csproj" />
+    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.WPF\AAV.WPF.csproj" />
+    <ProjectReference Include="..\PowerShellLog.Db\PowerShellLog.Db.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="AsLink\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.0"><!-- See ReadMe #f80
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    -->
+    
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="5.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="5.0.0"><!--
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    -->
+    
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.TraceSource" Version="5.0.0" />
+    <PackageReference Include="Serilog" Version="2.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="powershell.ico" />
+  </ItemGroup>
+
+</Project>
