@@ -7,7 +7,7 @@ namespace PowerShellLog.Db.DbModel
   {
     const string _dbName = "PowerShellLog";
     const string _dbSubP = @"Public\AppData\PowerShellLog\";
-    static readonly string _un = "//todo:", _pw = "//todo:";
+    string _un, _pw; //todo: MOVE to IsoStore.
     static readonly string
       lclFl = $@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename={OneDrive.Folder($@"{_dbSubP}{_dbName}.mdf")};Integrated Security=True;Connect Timeout=17;",
       exprs = $@"data source=.\sqlexpress;initial catalog={_dbName};integrated security=True;MultipleActiveResultSets=True;App=EntityFramework",

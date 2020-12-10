@@ -15,7 +15,7 @@ namespace PowerShellLog.AzureSqlDb.DbModel
 
   public partial class A0DbContext_NotUsed : DbContext//, IA0DbContext
   {
-    A0DbContext_NotUsed() : base("data source=sqs.database.windows.net;initial catalog=PowerShellLog;persist security info=True;user id=azuresqluser;password=\";lkj;lkj99\";MultipleActiveResultSets=True;App=EntityFramework")        // : base("name=A0DbContext")
+    A0DbContext_NotUsed() : base("data source=sqs.database.windows.net;initial catalog=PowerShellLog;persist security info=True;user id={username};password=\"{password}\";MultipleActiveResultSets=True;App=EntityFramework")        // : base("name=A0DbContext")
     {
     }
 
