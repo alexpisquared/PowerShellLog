@@ -80,7 +80,7 @@ namespace PowerShellLog
 
       themeSelector1.SetCurTheme(Thm);
 
-      Bpr.Begin1Async();
+      Bpr.BeepClk();
     }
 
     async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_db, srcFileMode);

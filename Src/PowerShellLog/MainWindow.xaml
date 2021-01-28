@@ -161,11 +161,20 @@
         <DataGrid   Grid.Row="3" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource cmdLogsViewSource}}" RowDetailsVisibilityMode="VisibleWhenSelected" 
                 Foreground="{StaticResource MainForegroundBrush}" x:Name="dghist">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Used at" Width="99" Binding="{Binding AddedAt, StringFormat=\{0:yyy-M-d HH:mm\}}" />
+            <DataGridTextColumn Header="Used at" Width="99" Binding="{Binding AddedAt, StringFormat=\{0:yyy-M-d HH:mm\}}" ToolTipService.ToolTip="{Binding LineNum}" />
+            <DataGridTextColumn Header="Machine" Width="*"  Binding="{Binding Machine}"                                   ToolTipService.ToolTip="{Binding Id}"      />
+            <DataGridTextColumn Header="Line"    Width="38" Binding="{Binding LineNum}"                                   ToolTipService.ToolTip="{Binding Id}"      />
+            <!--        
             <DataGridTextColumn Header="Id"      Width="1*" Binding="{Binding Id, StringFormat=\{0\,6:N0\}}" />
-            <DataGridTextColumn Header="Machine" Width="58" Binding="{Binding Machine}"   />
-            <!--
-        <DataGridTextColumn Binding="{Binding LineNum}" Header="Line Num" Width="*"/>-->
+            <DataGridTextColumn Binding="{Binding LineNum}" Header="Line Num" Width="*"/>
+            <DataGridTemplateColumn Header="■"     Width="26" >
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBlock Text="■" ToolTip="{Binding LineNum}" />
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            -->
           </DataGrid.Columns>
         </DataGrid>
       </Grid>
