@@ -11,6 +11,7 @@ using System.Windows.Data;
 using PowerShellLog.Db.Common;
 using AAV.Sys.Helpers;
 using Microsoft.Extensions.Logging;
+using Microsoft.Data.SqlClient;
 
 namespace PowerShellLog
 {
@@ -73,6 +74,7 @@ namespace PowerShellLog
         doSearch(); // assigns CVS => must be before the next line:
         CollectionViewSource.GetDefaultView(dg0.ItemsSource).Refresh(); //tu: refresh bound datagrid
       }
+      catch (SqlException ex) { var s = @$"Time to run MDB setup scripts \n\n  %OneDrive%\Public\Install\SqlLocalDB [Express 2017]*.* "; _logger.LogError(ex, s); ex.Pop(s); }
       catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }
 
       if (Environment.CommandLine.Contains(_noui_updatedbonly))
