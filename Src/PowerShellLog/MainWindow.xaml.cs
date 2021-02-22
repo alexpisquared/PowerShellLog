@@ -20,7 +20,7 @@ namespace PowerShellLog
     readonly A0DbContext _db = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
     readonly CollectionViewSource _cvsEmails;
     const string _badCmd = "DO NOT USE", _noui_updatedbonly = "NoUi_UpdateDbOnly";
-    Cmd _selectCmd;
+    Cmd? _selectCmd;
 
     readonly ILogger<MainWindow> _logger;
     public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>()) { }
@@ -102,7 +102,7 @@ namespace PowerShellLog
       }
       catch (Exception ex) { _logger.LogError(ex, $"DoSearch({match}).."); ex.Pop(); }
     }
-    public static async Task LoadTablesAsync(A0DbContext db)
+    public async Task LoadTablesAsync(A0DbContext db)
     {
       var lsw = Stopwatch.StartNew();
       await db.Log.OrderByDescending(r => r.Id).LoadAsync();
@@ -110,8 +110,12 @@ namespace PowerShellLog
 
       Trace.WriteLine($">>> Loaded  Cmds/Logs {db.Cmd.Local.Count,7} / {db.Log.Local.Count,-7} rows in  {lsw.Elapsed.TotalSeconds:N2} s:");
 
-      db.Log.Local.GroupBy(p => p.Machine).Select(g => new { name = g.Key, count = g.Count(), last = g.Max(x => x.AddedAt) }).OrderByDescending(r => r.last).ToList().
-        ForEach(q => Trace.WriteLine($"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  "));
+      var l = db.Log.Local.GroupBy(p => p.Machine).Select(g => new { name = g.Key, count = g.Count(), last = g.Max(x => x.AddedAt) }).OrderByDescending(r => r.last);
+      l.ToList().ForEach(q => Trace.WriteLine($"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  "));
+      
+      tbkHist.Text = string.Join("\n", l.Take(3).Select(q => $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  ").ToList());
+
+      //l.ToList().ForEach(q => tbkhist.Text += $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  \n");
     }
 
     public static readonly DependencyProperty SrchFProperty = DependencyProperty.Register("SrchF", typeof(string), typeof(MainWindow), new PropertyMetadata("", new PropertyChangedCallback(callbk)));
