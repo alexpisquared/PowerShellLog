@@ -21,7 +21,7 @@ namespace PowerShellLog
     readonly CollectionViewSource _cvsEmails;
     const string _badCmd = "DO NOT USE", _noui_updatedbonly = "NoUi_UpdateDbOnly";
     Cmd _selectCmd;
-    
+
     readonly ILogger<MainWindow> _logger;
     public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>()) { }
     public MainWindow(ILogger<MainWindow> logger)
@@ -105,14 +105,19 @@ namespace PowerShellLog
     public static async Task LoadTablesAsync(A0DbContext db)
     {
       var lsw = Stopwatch.StartNew();
-      await db.Log.OrderByDescending(r => r.Id).LoadAsync();                                                                            /**/  Debug.WriteLine($">>> Loaded  Logs {db.Log.Local.Count,7} rows in {lsw.ElapsedMilliseconds,6:N0} ms");
-      await db.Cmd.Where(r => (string.IsNullOrEmpty(r.Note) || !r.Note.StartsWith(_badCmd))).OrderByDescending(r => r.Id).LoadAsync();  /**/  Debug.WriteLine($">>> Loaded  Cmds {db.Cmd.Local.Count,7} rows in {lsw.ElapsedMilliseconds,6:N0} ms");
+      await db.Log.OrderByDescending(r => r.Id).LoadAsync();
+      await db.Cmd.Where(r => (string.IsNullOrEmpty(r.Note) || !r.Note.StartsWith(_badCmd))).OrderByDescending(r => r.Id).LoadAsync();
+
+      Trace.WriteLine($">>> Loaded  Cmds/Logs {db.Cmd.Local.Count,7} / {db.Log.Local.Count,-7} rows in  {lsw.Elapsed.TotalSeconds:N2} s:");
+
+      db.Log.Local.GroupBy(p => p.Machine).Select(g => new { name = g.Key, count = g.Count(), last = g.Max(x => x.AddedAt) }).OrderByDescending(r => r.last).ToList().
+        ForEach(q => Trace.WriteLine($"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  "));
     }
 
     public static readonly DependencyProperty SrchFProperty = DependencyProperty.Register("SrchF", typeof(string), typeof(MainWindow), new PropertyMetadata("", new PropertyChangedCallback(callbk)));
 
     public string SrchF { get => (string)GetValue(SrchFProperty); set => SetValue(SrchFProperty, value); }
-    static void callbk(DependencyObject d, DependencyPropertyChangedEventArgs e) { if (e.NewValue is string) (d as MainWindow).doSearch((e.NewValue as string).ToLowerInvariant()); }
+    static void callbk(DependencyObject d, DependencyPropertyChangedEventArgs e) { if (e.NewValue is string) (d as MainWindow)?.doSearch((e.NewValue as string)?.ToLowerInvariant() ?? "<null>"); }
 
     async void onLoaded(object s, RoutedEventArgs e) => await load();// _db, doSearch, fsToDbLoad);
     async void onClose(object s, RoutedEventArgs e)
@@ -141,10 +146,10 @@ namespace PowerShellLog
         //MessageBox.Show("Only for local SQL - NOT for Azure!!!");      return;
         tbkRpt.Text = await fsToDbLoad(((Button)s)?.Tag?.ToString() ?? "No tag :(");
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }      
+      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }
       finally { ((Button)s).IsEnabled = true; System.Media.SystemSounds.Hand.Play(); }
     }
-    void onChangeTheme(object s, RoutedEventArgs e) => ApplyTheme(((Button)s).Tag.ToString());
+    void onChangeTheme(object s, RoutedEventArgs e) => ApplyTheme(((Button)s)?.Tag?.ToString() ?? "Default");
     void onCopy(object s, RoutedEventArgs e) { Debug.WriteLine("onCopy"); Clipboard.SetText(((Button)s).Tag.ToString()); System.Media.SystemSounds.Beep.Play(); }
     void onHide(object s, RoutedEventArgs e)
     {

@@ -89,7 +89,7 @@ namespace PowerShellLog
     protected override void OnStartup(StartupEventArgs e)
     {
       base.OnStartup(e);
-      
+
       //MessageBox.Show("OnStartup 2/n");
       Current.DispatcherUnhandledException += UnhandledExceptionHndlr.OnCurrentDispatcherUnhandledException;
       EventManager.RegisterClassHandler(typeof(TextBox), TextBox.GotFocusEvent, new RoutedEventHandler((s, re) => { (s as TextBox).SelectAll(); }));
@@ -128,9 +128,9 @@ namespace PowerShellLog
             Shutdown(0);
 #endif
     }
-    protected override void OnExit(ExitEventArgs e) {                           /**/ Trace.WriteLine($"{DateTime.Now:yy.MM.dd HH:mm:ss.f} +{(DateTime.Now - _started):mm\\:ss\\.ff} App.OnExit()          1/3"); base.OnExit(e); }
-    protected override void OnDeactivated(EventArgs e) {                        /**/ Trace.WriteLine($"{DateTime.Now:yy.MM.dd HH:mm:ss.f} +{(DateTime.Now - _started):mm\\:ss\\.ff} App.OnDeactivated()   2/3"); base.OnDeactivated(e); }
-    protected override void OnSessionEnding(SessionEndingCancelEventArgs e) {   /**/ Trace.WriteLine($"{DateTime.Now:yy.MM.dd HH:mm:ss.f} +{(DateTime.Now - _started):mm\\:ss\\.ff} App.OnSessionEnding() 3/3"); base.OnSessionEnding(e); }
+    protected override void OnDeactivated(EventArgs e) {                        /**/ Trace.WriteLine($"{DateTime.Now:yy.MM.dd HH:mm:ss.f} +{(DateTime.Now - _started):mm\\:ss\\.ff} App.OnDeactivated()   1/3 - OK   "); base.OnDeactivated(e); }
+    protected override void OnExit(ExitEventArgs e) {                           /**/ Trace.WriteLine($"{DateTime.Now:yy.MM.dd HH:mm:ss.f} +{(DateTime.Now - _started):mm\\:ss\\.ff} App.OnExit()          2/3 - OK \n"); base.OnExit(e); }
+    protected override void OnSessionEnding(SessionEndingCancelEventArgs e) {   /**/ Trace.WriteLine($"{DateTime.Now:yy.MM.dd HH:mm:ss.f} +{(DateTime.Now - _started):mm\\:ss\\.ff} App.OnSessionEnding() 3/3 - never seen in the log"); base.OnSessionEnding(e); }
 
     static void demo(TraceSwitch traceLevel, string src)
     {
