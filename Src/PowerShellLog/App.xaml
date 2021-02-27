@@ -4,7 +4,7 @@
              StartupUri="EfHierPoc.xaml">
   -->
   <Application.Resources>
-    <ResourceDictionary >
+    <ResourceDictionary>
       <ResourceDictionary.MergedDictionaries>
 
         <!--ap:Backup theme + designer's:-->

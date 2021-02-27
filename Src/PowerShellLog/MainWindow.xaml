@@ -11,6 +11,9 @@
                 d:DesignWidth="1200"
                 Style="{DynamicResource WindowStyle_Aav0}"
                 Loaded="onLoaded">
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="0" ResizeBorderThickness="10" />
+  </WindowChrome.WindowChrome>
   <lnk:WindowBase.Resources>
     <ResourceDictionary >
       <ResourceDictionary.MergedDictionaries>
@@ -60,9 +63,6 @@
     </ResourceDictionary>
   </lnk:WindowBase.Resources>
   <!--xmlns:Models="clr-namespace:PowerShellLog.Db.DbModel;assembly=PowerShellLog.Db"-->
-  <WindowChrome.WindowChrome>
-    <WindowChrome CaptionHeight="0" ResizeBorderThickness="10" />
-  </WindowChrome.WindowChrome>
   <Border Style="{StaticResource BorderStyle_Aav0}">
     <!--DataContext="{Binding Source={StaticResource SampleDataSource}}"-->
     <Grid Margin="6" x:Name="ZommablePanel" DataContext="{StaticResource cmdViewSource}">
