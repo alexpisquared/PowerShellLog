@@ -49,10 +49,11 @@ namespace PowerShellLog
 
       try
       {
-        await new MainWindow().LoadTablesAsync(_db);
-        MainWindow.DoSearch("", _db, _cvsEmails, tbkTtl, _logger);
+        var mw = new MainWindow();
+        await mw.LoadTablesAsync(_db);
+        mw.DoSearch("", _db, _cvsEmails, tbkTtl, _logger);
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }
+      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(null); }
     }
   }
 }

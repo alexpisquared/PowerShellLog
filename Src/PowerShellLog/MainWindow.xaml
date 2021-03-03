@@ -185,6 +185,9 @@
       <TextBlock  Grid.ColumnSpan="6" Grid.Row="6" x:Name="tbkRpt" Text="· · · " />
 
       <StackPanel Grid.ColumnSpan="6" Grid.Row="6" Orientation="Horizontal" HorizontalAlignment="Right">
+        <Button Content="  Crash test - Owned "  Click="onThrow1" Foreground="#e00" />
+        <Button Content="  Crash test -  Not  "  Click="onThrow2" Foreground="#e00" />
+
         <Label  Content="      FS►DB:"  Foreground="#e00" Margin="0,6,0,0"/>
         <Button Content="  _Copy Cur "  Click="onFsToDbLoad" Foreground="#e00" Tag="cc" ToolTip="get latest new lines from current PS2 log file"/>
         <Button Content="  _Init All "  Click="onFsToDbLoad" Foreground="#e00" Tag="ia" ToolTip="find new lines in all log files copied to 1dr."/>

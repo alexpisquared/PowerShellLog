@@ -58,7 +58,7 @@ namespace PowerShellLog
         _logger.Log(LogLevel.Critical,    /**/ " ~~ 5 / 6   Critica");
         _logger.Log(LogLevel.Trace,       /**/ " ~~ 6 / 6   Trace  ");
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }
+      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(this); }
 #endif
     }
 
@@ -74,8 +74,8 @@ namespace PowerShellLog
         doSearch(); // assigns CVS => must be before the next line:
         CollectionViewSource.GetDefaultView(dg0.ItemsSource).Refresh(); //tu: refresh bound datagrid
       }
-      catch (SqlException ex) { var s = @$"Time to run MDB setup scripts \n\n  %OneDrive%\Public\Install\SqlLocalDB [Express 2017]*.* "; _logger.LogError(ex, s); ex.Pop(s); }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }
+      catch (SqlException ex) { var s = @$"Time to run MDB setup scripts \n\n  %OneDrive%\Public\Install\SqlLocalDB [Express 2017]*.* "; _logger.LogError(ex, s); ex.Pop(this, optl: s); }
+      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(this); }
 
       if (Environment.CommandLine.Contains(_noui_updatedbonly))
         Close();
@@ -87,7 +87,7 @@ namespace PowerShellLog
 
     async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_db, srcFileMode);
     void doSearch(string match = "") => DoSearch(match, _db, _cvsEmails, tbkTtl, _logger);
-    public static void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, ILogger _logger)
+    public  void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, ILogger _logger)
     {
       try
       {
@@ -100,7 +100,7 @@ namespace PowerShellLog
         _cvsEmails.Source = qry;
         tbkTtl.Text = $" => {(qry.Count() == max ? "Over" : "Total")} {qry.Count()} matches to '{match}' found";
       }
-      catch (Exception ex) { _logger.LogError(ex, $"DoSearch({match}).."); ex.Pop(); }
+      catch (Exception ex) { _logger.LogError(ex, $"DoSearch({match}).."); ex.Pop(this); }
     }
     public async Task LoadTablesAsync(A0DbContext db)
     {
@@ -112,7 +112,7 @@ namespace PowerShellLog
 
       var l = db.Log.Local.GroupBy(p => p.Machine).Select(g => new { name = g.Key, count = g.Count(), last = g.Max(x => x.AddedAt) }).OrderByDescending(r => r.last);
       l.ToList().ForEach(q => Trace.WriteLine($"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  "));
-      
+
       tbkHist.Text = string.Join("\n", l.Take(3).Select(q => $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  ").ToList());
 
       //l.ToList().ForEach(q => tbkhist.Text += $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  \n");
@@ -150,7 +150,7 @@ namespace PowerShellLog
         //MessageBox.Show("Only for local SQL - NOT for Azure!!!");      return;
         tbkRpt.Text = await fsToDbLoad(((Button)s)?.Tag?.ToString() ?? "No tag :(");
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(); }
+      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(this); }
       finally { ((Button)s).IsEnabled = true; System.Media.SystemSounds.Hand.Play(); }
     }
     void onChangeTheme(object s, RoutedEventArgs e) => ApplyTheme(((Button)s)?.Tag?.ToString() ?? "Default");
@@ -165,11 +165,10 @@ namespace PowerShellLog
       CollectionViewSource.GetDefaultView(dg0.ItemsSource).Refresh(); //tu: refresh bound datagrid
     }
 
-    private void dg0_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
+    void dg0_SelectionChanged(object sender, SelectionChangedEventArgs e) { }
 
-    }
-
+    void onThrow1(object s, RoutedEventArgs e) { try { throw new Exception("Testing Owned window popup ... "); } catch (Exception ex) { ex.Pop(this); } }
+    void onThrow2(object s, RoutedEventArgs e) { try { throw new Exception("Testing Center window popup ... "); } catch (Exception ex) { ex.Pop(this); } }
     void onSelChd(object s, SelectionChangedEventArgs e)
     {
       Debug.WriteLine("onSelChd");
