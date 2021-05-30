@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PowerShellLog.Db.Common 
+namespace PowerShellLog.Db.Common
 {
   public class FsToDbLoader
   {
@@ -63,7 +63,7 @@ namespace PowerShellLog.Db.Common
           var cmd = db.Cmd.Local.FirstOrDefault(r => !string.IsNullOrEmpty(cmdTxt) && r.CommandText.Equals(cmdTxt, StringComparison.OrdinalIgnoreCase));
           if (cmd == null)
           {
-            db.Cmd.Local.Add(cmd = new Cmd { CommandText = cmdTxt, AddedAt = now });
+            db.Cmd.Local.Add(cmd = new Cmd { CommandText = cmdTxt.Length < 900 ? cmdTxt : cmdTxt.Substring(0, 900), AddedAt = now });
             Debug.Write($" ++");
             ttlNewCmds++;
           }
@@ -91,7 +91,8 @@ namespace PowerShellLog.Db.Common
           Debug.Write($"   {cmdTxt,-64} \r");
         }
 
-        report += ($"\r\n\n{await db.SaveChangesAsync()} rows saved\n");
+        var rs = await db.SaveChangesAsync();
+        report += ($"\r\n\n{rs} rows saved\n");
 
         //System.Media.SystemSounds.Beep.Play();
 

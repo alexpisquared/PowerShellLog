@@ -34,7 +34,7 @@ namespace PowerShellLog
       _cvsEmails = ((CollectionViewSource)(FindResource("cmdViewSource")));
       DataContext = this;
 
-      tbkVer.Text = VerHelper.CurVerStr("Core3");
+      tbkVer.Text = VerHelper.CurVerStr("Net5");
 
       tbxSearch.Focus();
 
