@@ -169,6 +169,7 @@ namespace PowerShellLog
 
     void onThrow1(object s, RoutedEventArgs e) { try { throw new Exception("Testing Owned window popup ... "); } catch (Exception ex) { ex.Pop(this); } }
     void onThrow2(object s, RoutedEventArgs e) { try { throw new Exception("Testing Center window popup ... "); } catch (Exception ex) { ex.Pop(this); } }
+
     void onSelChd(object s, SelectionChangedEventArgs e)
     {
       Debug.WriteLine("onSelChd");

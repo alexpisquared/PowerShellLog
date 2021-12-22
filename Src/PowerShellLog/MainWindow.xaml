@@ -58,6 +58,16 @@
         </Setter>
       </Style>
 
+      <Style TargetType="{x:Type Button}"       x:Key="BtnRoundd" BasedOn="{StaticResource BtnBase}">
+        <Setter Property="FocusVisualStyle"     Value="{x:Null}" />
+        <Style.Resources>
+          <Style TargetType="Border">
+            <Setter Property="CornerRadius"     Value="16" />
+          </Style>
+        </Style.Resources>
+      </Style>
+      <Style TargetType="{x:Type Button}"       BasedOn="{StaticResource BtnRoundd}" />
+
       <CollectionViewSource x:Key="cmdViewSource" d:DesignSource="{d:DesignInstance {x:Type Models:Cmd}, CreateList=True}"/>
       <CollectionViewSource x:Key="cmdLogsViewSource" Source="{Binding Logs, Source={StaticResource cmdViewSource}}"/>
     </ResourceDictionary>
@@ -94,7 +104,7 @@
         <TextBlock Text="PowerShell CLI Chronolog" FontSize="14" Foreground="#0a0" x:Name="tbkHist" HorizontalAlignment="Center" Margin="150 0 0 0" FontFamily="Lucida Console"/>
       </StackPanel>
 
-      <StackPanel Grid.ColumnSpan="6" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 8 0 0">
+      <StackPanel Grid.ColumnSpan="6" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 8 40 0">
         <View:ThemeSelectorUsrCtrl x:Name="themeSelector1"/>
         <TextBlock x:Name="tbkVer" Text="Ver" Margin="22 0 0 0" Foreground="#08f" />
       </StackPanel>
@@ -199,6 +209,7 @@
 
       <GridSplitter Grid.Column="4"  Grid.Row="4" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
+      <Button Grid.Column="5" Content="X" Height="32" Width="32" Click="onClose" IsCancel="True" VerticalAlignment="Top" HorizontalAlignment="Right" />
 
     </Grid>
   </Border>
