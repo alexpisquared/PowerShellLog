@@ -13,3 +13,4 @@ Uncommenting will cause the Exception:
 
 #2021-12-29
 Prototyping User Secrets proper store through the Connected Services feature.
+1. Just added the required stuff following https://www.youtube.com/watch?v=7OBMhoKieqk
