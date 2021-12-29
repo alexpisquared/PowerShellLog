@@ -1,4 +1,5 @@
 ﻿using AAV.WPF.Ext;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PowerShellLog.Db.DbModel;
 using System;
@@ -12,10 +13,11 @@ namespace PowerShellLog
   public partial class EfHierPoc : Window
   {
     readonly CollectionViewSource _cvsEmails;
-    readonly ILogger<Window> _logger;
-    readonly A0DbContext _db; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
+    readonly ILogger<Window> _lgr;
+    readonly A0DbContext _dbx; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
+    readonly IConfigurationRoot _cfg;
 
-    public EfHierPoc(ILogger<Window> logger, A0DbContext dbContext)
+    public EfHierPoc(ILogger<Window> logger, A0DbContext dbContext, IConfigurationRoot cfg)
     {
       InitializeComponent();
 
@@ -23,14 +25,15 @@ namespace PowerShellLog
       DataContext = this;
 
       tbxSearch.Focus();
-      _logger = logger;
-      _db = dbContext;
+      _lgr = logger;
+      _dbx = dbContext;
+      _cfg = cfg;
     }
 
     async void onLoaded(object s, RoutedEventArgs e) => await load();
     async void onClose(object s, RoutedEventArgs e)
     {
-      var rowsSaved = await _db.SaveChangesAsync();
+      var rowsSaved = await _dbx.SaveChangesAsync();
       Debug.WriteLine($"{rowsSaved} rows saved");
       Hide();
       var dly = 400;
@@ -50,11 +53,11 @@ namespace PowerShellLog
 
       try
       {
-        var mw = new MainWindow(_logger, _db);
-        await mw.LoadTablesAsync(_db);
-        mw.DoSearch("", _db, _cvsEmails, tbkTtl, _logger);
+        var mw = new MainWindow(_lgr, _dbx, _cfg);
+        await mw.LoadTablesAsync(_dbx);
+        mw.DoSearch("", _dbx, _cvsEmails, tbkTtl, _lgr);
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(null); }
+      catch (Exception ex) { _lgr.LogError(ex, $""); ex.Pop(null); }
     }
   }
 }

@@ -9,6 +9,7 @@ using AAV.Sys.Helpers;
 using AAV.WPF.Ext;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PowerShellLog.Db.Common;
 using PowerShellLog.Db.DbModel;
@@ -17,20 +18,19 @@ namespace PowerShellLog
 {
   public partial class MainWindow : AAV.WPF.Base.WindowBase
   {
-    readonly A0DbContext _db; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
+    readonly A0DbContext _dbx; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
+    readonly IConfigurationRoot _cfg;
+    readonly ILogger<Window> _lgr;
     readonly CollectionViewSource _cvsEmails;
     const string _badCmd = "DO NOT USE", _noui_updatedbonly = "NoUi_UpdateDbOnly";
     Cmd? _selectCmd;
 
-    readonly ILogger<Window> _logger;
-
-    //public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>(), A0DbContext.GetLclFl) { }
-    public MainWindow(ILogger<Window> logger, A0DbContext dbContext)
+    public MainWindow(ILogger<Window> lgr, A0DbContext dbx, IConfigurationRoot cfg) //public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>(), A0DbContext.GetLclFl) { }
     {
-      _logger = logger;
-                //new LoggerFactory().CreateLogger<Window>();
+      _lgr = lgr;                //new LoggerFactory().CreateLogger<Window>();
+      _dbx = dbx;
+      _cfg = cfg;
 
-      _db = dbContext;
       Opacity = Environment.CommandLine.Contains(_noui_updatedbonly) ? 0 : 1;
 
       InitializeComponent();
@@ -43,28 +43,30 @@ namespace PowerShellLog
       tbxSearch.Focus();
 
       themeSelector1.ApplyTheme = ApplyTheme;
-
       Topmost = Debugger.IsAttached;
 
 #if DI
       try
       {
-        _logger.LogInformation /**/ (" ~~ 1 / 6   Informa");
-        _logger.LogDebug       /**/ (" ~~ 2 / 6   Debug  ");
-        _logger.LogWarning     /**/ (" ~~ 3 / 6   Warning");
-        _logger.LogError       /**/ (" ~~ 4 / 6   Error  ");
-        _logger.LogCritical    /**/ (" ~~ 5 / 6   Critica");
-        _logger.LogTrace       /**/ (" ~~ 6 / 6   Trace");
+        _lgr.LogInformation($"*** WhereAmI: {_cfg["WhereAmI"]}   (mainwin.xaml.cs)");
+        //_lgr.LogInformation($"*** CS:LclDb: {_cfg.GetConnectionString("LclDb")}");
 
-        _logger.Log(LogLevel.None,        /**/ " ~~ 0 / 6   None   ");
-        _logger.Log(LogLevel.Information, /**/ " ~~ 1 / 6   Informa");
-        _logger.Log(LogLevel.Debug,       /**/ " ~~ 2 / 6   Debug  ");
-        _logger.Log(LogLevel.Warning,     /**/ " ~~ 3 / 6   Warning");
-        _logger.Log(LogLevel.Error,       /**/ " ~~ 4 / 6   Error  ");
-        _logger.Log(LogLevel.Critical,    /**/ " ~~ 5 / 6   Critica");
-        _logger.Log(LogLevel.Trace,       /**/ " ~~ 6 / 6   Trace  ");
+        //_lgr.LogInformation /**/ (" ~~ 1 / 6   Informa");
+        //_lgr.LogDebug       /**/ (" ~~ 2 / 6   Debug  ");
+        //_lgr.LogWarning     /**/ (" ~~ 3 / 6   Warning");
+        //_lgr.LogError       /**/ (" ~~ 4 / 6   Error  ");
+        //_lgr.LogCritical    /**/ (" ~~ 5 / 6   Critica");
+        //_lgr.LogTrace       /**/ (" ~~ 6 / 6   Trace");
+
+        //_lgr.Log(LogLevel.None,        /**/ " ~~ 0 / 6   None   ");
+        //_lgr.Log(LogLevel.Information, /**/ " ~~ 1 / 6   Informa");
+        //_lgr.Log(LogLevel.Debug,       /**/ " ~~ 2 / 6   Debug  ");
+        //_lgr.Log(LogLevel.Warning,     /**/ " ~~ 3 / 6   Warning");
+        //_lgr.Log(LogLevel.Error,       /**/ " ~~ 4 / 6   Error  ");
+        //_lgr.Log(LogLevel.Critical,    /**/ " ~~ 5 / 6   Critica");
+        //_lgr.Log(LogLevel.Trace,       /**/ " ~~ 6 / 6   Trace  ");
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(this); }
+      catch (Exception ex) { _lgr.LogError(ex, $""); ex.Pop(this); }
 #endif
     }
 
@@ -74,14 +76,14 @@ namespace PowerShellLog
 
       try
       {
-        await LoadTablesAsync(_db);
+        await LoadTablesAsync(_dbx);
         tbkRpt.Text = await fsToDbLoad();
 
         doSearch(); // assigns CVS => must be before the next line:
         CollectionViewSource.GetDefaultView(dg0.ItemsSource).Refresh(); //tu: refresh bound datagrid
       }
-      catch (SqlException ex) { var s = @$"Time to run MDB setup scripts \n\n  %OneDrive%\Public\Install\SqlLocalDB [Express 2017]*.* "; _logger.LogError(ex, s); ex.Pop(this, optl: s); }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(this); }
+      catch (SqlException ex) { var s = @$"Time to run MDB setup scripts \n\n  %OneDrive%\Public\Install\SqlLocalDB [Express 2017]*.* "; _lgr.LogError(ex, s); ex.Pop(this, optl: s); }
+      catch (Exception ex) { _lgr.LogError(ex, $""); ex.Pop(this); }
 
       if (Environment.CommandLine.Contains(_noui_updatedbonly))
         Close();
@@ -91,8 +93,8 @@ namespace PowerShellLog
       Bpr.BeepClk();
     }
 
-    async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_db, srcFileMode);
-    void doSearch(string match = "") => DoSearch(match, _db, _cvsEmails, tbkTtl, _logger);
+    async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_dbx, srcFileMode);
+    void doSearch(string match = "") => DoSearch(match, _dbx, _cvsEmails, tbkTtl, _lgr);
     public void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, ILogger _logger)
     {
       try
@@ -125,7 +127,7 @@ namespace PowerShellLog
 
         //l.ToList().ForEach(q => tbkhist.Text += $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  \n");
       }
-      catch (Exception ex) { _logger.LogError(ex, $"{nameof(LoadTablesAsync)}({db}).."); ex.Pop(this); }
+      catch (Exception ex) { _lgr.LogError(ex, $"{nameof(LoadTablesAsync)}({db}).."); ex.Pop(this); }
     }
 
     public static readonly DependencyProperty SrchFProperty = DependencyProperty.Register("SrchF", typeof(string), typeof(MainWindow), new PropertyMetadata("", new PropertyChangedCallback(callbk)));
@@ -136,7 +138,7 @@ namespace PowerShellLog
     async void onLoaded(object s, RoutedEventArgs e) => await LoadAsync();// _db, doSearch, fsToDbLoad);
     async void onClose(object s, RoutedEventArgs e)
     {
-      var rowsSaved = await _db.SaveChangesAsync();
+      var rowsSaved = await _dbx.SaveChangesAsync();
       Debug.WriteLine($"{rowsSaved} rows saved");
       Hide();
       var dly = 400;
@@ -160,7 +162,7 @@ namespace PowerShellLog
         //MessageBox.Show("Only for local SQL - NOT for Azure!!!");      return;
         tbkRpt.Text = await fsToDbLoad(((Button)s)?.Tag?.ToString() ?? "No tag :(");
       }
-      catch (Exception ex) { _logger.LogError(ex, $""); ex.Pop(this); }
+      catch (Exception ex) { _lgr.LogError(ex, $""); ex.Pop(this); }
       finally { ((Button)s).IsEnabled = true; System.Media.SystemSounds.Hand.Play(); }
     }
     void onChangeTheme(object s, RoutedEventArgs e) => ApplyTheme(((Button)s)?.Tag?.ToString() ?? "Default");
@@ -185,7 +187,7 @@ namespace PowerShellLog
       Debug.WriteLine("onSelChd");
       _selectCmd = e.AddedItems.Count > 0 ? (Cmd)e.AddedItems[0] : null;
       if (_selectCmd != null)
-        dghist.ItemsSource = _db.Log.Local.Where(r => r.CommandId == _selectCmd.Id);
+        dghist.ItemsSource = _dbx.Log.Local.Where(r => r.CommandId == _selectCmd.Id);
     }
   }
 }

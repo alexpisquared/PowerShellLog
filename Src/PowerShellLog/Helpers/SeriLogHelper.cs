@@ -24,7 +24,7 @@ namespace PowerShellLog.Helpers
               .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
               .Enrich.FromLogContext() // .Enrich.WithMachineName().Enrich.WithThreadId()                                       
 #if DEBUG
-              .WriteTo.File(path: @$"{logFolder.Replace("..", ".Lite..")}", rollingInterval: RollingInterval.Infinite)
+              .WriteTo.File(path: @$"{logFolder.Replace("..", ".Dbg.Infi..")}", rollingInterval: RollingInterval.Infinite)
 #else
               .WriteTo.File(path: @$"{logFolder.Replace("..", ".Lite..")}", rollingInterval: RollingInterval.Day)
             //.WriteTo.File(path: @$"{logFolder.Replace("..", ".Verb..")}", outputTemplate: _template, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose, rollingInterval: RollingInterval.Day)

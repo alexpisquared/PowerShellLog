@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
-using AAV.Sys.Helpers;
 using AAV.WPF.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -37,30 +37,29 @@ namespace PowerShellLog
     {
       var services = new ServiceCollection();
 
-      _ = services.AddSingleton<IConfigurationRoot>(ConfigHelper.AutoInitConfigHardcoded());
+      _ = services.AddSingleton<IConfigurationRoot>(ConfigHelper.AutoInitConfigFromFile());
 
       _ = services.AddSingleton<ILogger<Window>>(sp => SeriLogHelper.InitLoggerFactory( //todo: this allows to override by UserSettings entry: UserSettingsIPM.UserLogFolderFile ??= // if new - store in usersettings for next uses.
-        Helpers.FSHelper.GetCreateSafeLogFolderAndFile(new[]
+        FSHelper.GetCreateSafeLogFolderAndFile(new[]
         {
-          //  sp.GetRequiredService<IConfigurationRoot>()["LogFolder"].Replace("..", $"{(Assembly.GetExecutingAssembly().GetName().Name??"Unkwn")[..5]}.{Environment.UserName[..3]}.."),          
-          @$"..\Logs\",@$"\Temp\Logs\"
+          sp.GetRequiredService<IConfigurationRoot>()["LogFolder"].Replace("..", $"{(Assembly.GetExecutingAssembly().GetName().Name??"Unkwn")[..5]}.{Environment.UserName[..3]}.."), @$"..\Logs\", @$"\Temp\Logs\"
         })).CreateLogger<MainWindow>());
 
-      _ = services.AddSingleton<IAddChild, MainWindow>();//(sp => new MainWindow(sp.GetRequiredService<ILogger<Window>>(), sp.GetRequiredService<A0DbContext>()));
-      //_ = services.AddSingleton<MainWindow>();
+      _ = services.AddSingleton<IAddChild, MainWindow>(); //tu: for troubleshooting the type mismatch: (sp => new MainWindow(sp.GetRequiredService<ILogger<Window>>(), sp.GetRequiredService<A0DbContext>()));
 
       _serviceProvider = services.BuildServiceProvider();
 
-      services.AddDbContext<A0DbContext>(optionsBuilder =>
-      {
-        Trace.WriteLine($"*** WhereAmI: {_serviceProvider?.GetRequiredService<IConfigurationRoot>()["WhereAmI"]}");
-        Trace.WriteLine($"***    LclDb: {_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb")}");
+      _ = services.AddDbContext<A0DbContext>(optionsBuilder =>
+        {
+          var lgr = _serviceProvider?.GetRequiredService<ILogger<Window>>();
+          var cfg = _serviceProvider?.GetRequiredService<IConfigurationRoot>();
 
-        optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb") ?? throw new ArgumentNullException(".GetConnectionString('LclDb')"));
-      });
+          lgr?.LogInformation($"*** WhereAmI: {cfg?["WhereAmI"]}");
+
+          optionsBuilder.UseSqlServer(cfg.GetConnectionString("LclDb") ?? throw new ArgumentNullException(".GetConnectionString('LclDb')"));
+        });
 
       _serviceProvider = services.BuildServiceProvider();
-
     }
 
     ////serilog 
@@ -92,7 +91,7 @@ namespace PowerShellLog
       EventManager.RegisterClassHandler(typeof(TextBox), TextBox.GotFocusEvent, new RoutedEventHandler((s, re) => { (s as TextBox).SelectAll(); }));
       //Tracer.SetupTracingOptions("PowerShellLog", new TraceSwitch("Verbose-ish", "See ScrSvr for the model.") { Level = TraceLevel.Verbose }, false);
 
-#if DI
+#if !_DI_
       //cnf 2/2:
       //var builder = new ConfigurationBuilder()
       //  .SetBasePath(Directory.GetCurrentDirectory())

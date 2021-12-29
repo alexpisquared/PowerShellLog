@@ -3,27 +3,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using AAV.WPF.Ext;
-using Microsoft.Extensions.Configuration;
 using AAV.Sys.Ext;
-
 using AAV.WPF.Ext;
-using PowerShellLog.Db.DbModel;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using PowerShellLog.Db.Common;
-using AAV.Sys.Helpers;
-//using Microsoft.Extensions.Logging;
-using Microsoft.Data.SqlClient;
-using System.Windows.Markup;
-
+using Microsoft.Extensions.Configuration;
 
 namespace PowerShellLog.Helpers;
 
@@ -54,7 +37,7 @@ public class ConfigHelper
         }
         catch (InvalidOperationException ex)
         {
-          ex.Pop((Window?)null, optl: "Disaster ...");
+          ex.Pop(null, optl: "Disaster ...");
         }
         catch (FileNotFoundException ex)
         {
@@ -64,16 +47,16 @@ public class ConfigHelper
         catch (FormatException ex)
         {
           _ = new Process { StartInfo = new ProcessStartInfo("Notepad.exe", $"\"{appsettingsFile}\"") { RedirectStandardError = true, UseShellExecute = false } }.Start();
-          ex.Pop((Window?)null, optl: $"Try to edit the errors out from \n\t {appsettingsFile}");
+          ex.Pop(null, optl: $"Try to edit the errors out from \n\t {appsettingsFile}");
         }
         catch (Exception ex)
         {
           if (!TryCreateDefaultFile(appsettingsFile, defaultValues, enforceCreation))
-            ex.Pop((Window?)null, optl: "██  ██  ██  Take a look!");
+            ex.Pop(null, optl: "██  ██  ██  Take a look!");
         }
       }
 
-      new Exception().Pop((Window?)null, optl: $"Unable to create default  {appsettingsFile}  file  {i}/{max} times.");
+      new Exception().Pop(null, optl: $"Unable to create default  {appsettingsFile}  file  {i}/{max} times.");
     }
 
     return AutoInitConfigHardcoded(defaultValues, enforceCreation);
@@ -86,11 +69,11 @@ public class ConfigHelper
       .Build();
 
     config["WhereAmI"] = "-* In Mem *-";
-    config["LogFolder"] = new[] { "D21-MJ0AWBEV", "RAZER1" }.Contains(Environment.MachineName) ? "C:\\g\\CI-Reimagined-Invention\\Src\\CI-RI\\BE.IncomePayment\\bin\\Logs\\CI.IPM..log" : "\\\\bbsfile01\\Public\\Dev\\AlexPi\\Misc\\Logs\\..log";
+    config["LogFolder"] = @"C:\g\PowerShellLog\Src\PowerShellLog\bin\Logs\PSL..log";
     config["SqlConStrSansSnD"] = "Server={0};     Database={1};       Trusted_Connection=True;Connection Timeout=52";
     config["ConnectionStrings:LclDb"] = "Data Source=(localdb)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\alexp\\OneDrive\\Public\\AppData\\PowerShellLog\\PowerShellLog.mdf;Integrated Security=True;Connect Timeout=17;";
 
-#if true
+#if !true // 
       var appConfig = new AppConfig();
       config.Bind(appConfig);
       string json = Newtonsoft.Json.JsonConvert.SerializeObject(appConfig);
@@ -104,7 +87,7 @@ public class ConfigHelper
     _appSettingsFileNameOnly = "AppSettings.json",
     _defaultAppSetValues = @"{{
       ""WhereAmI"":             ""{0}"",
-      ""LogFolder"":            ""\\\\bbsfile01\\Public\\Dev\\AlexPi\\Misc\\Logs\\..log"",
+      ""LogFolder"":            ""C:\\g\\PowerShellLog\\Src\\PowerShellLog\\bin\\Logs\\psl..log"",
       ""ServerList"":           "".\\sqlexpress mtDEVsqldb,1625 mtUATsqldb mtPRDsqldb"",
       ""SqlConStrSansSnD"":     ""Server={{0}};Database={{1}};          Trusted_Connection=True;Connection Timeout=52"",
       ""SqlConStrBR"":          ""Server={{server}};Database=BR;        Trusted_Connection=True;Connection Timeout=52"",
@@ -138,10 +121,10 @@ public class ConfigHelper
     catch (FormatException ex)
     {
       _ = new Process { StartInfo = new ProcessStartInfo("Notepad.exe", $"\"{appsettingsPathFileExt}\"") { RedirectStandardError = true, UseShellExecute = false } }.Start();
-      ex.Pop((Window?)null, optl: $"Try to edit the errors out from \n\t {appsettingsPathFileExt}");
+      ex.Pop(null, optl: $"Try to edit the errors out from \n\t {appsettingsPathFileExt}");
       return false;
     }
-    catch (Exception ex) { ex.Pop((Window?)null); return false; }
+    catch (Exception ex) { ex.Pop(null); return false; }
   }
   class WhatIsThatForType { public string MyProperty { get; set; } = "<Default Value of Nothing Special>"; }
 
