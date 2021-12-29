@@ -86,13 +86,8 @@ public class ConfigHelper
 
     config["WhereAmI"] = "-* In Mem *-";
     config["LogFolder"] = new[] { "D21-MJ0AWBEV", "RAZER1" }.Contains(Environment.MachineName) ? "C:\\g\\CI-Reimagined-Invention\\Src\\CI-RI\\BE.IncomePayment\\bin\\Logs\\CI.IPM..log" : "\\\\bbsfile01\\Public\\Dev\\AlexPi\\Misc\\Logs\\..log";
-    config["ServerList"] = ".\\sqlexpress mtDEVsqldb,1625 mtUATsqldb mtPRDsqldb";
-    config["SqlConStrSansSnD"] =   /**/  "Server={0};     Database={1};       Trusted_Connection=True;Connection Timeout=52";
-    config["SqlConStrBR"] =        /**/ $"Server={server};Database=BR;        Trusted_Connection=True;Connection Timeout=52";
-    config["SqlConStrVBCM"] =      /**/ $"Server={server};Database=VBCM;      Trusted_Connection=True;Connection Timeout=52";
-    config["SqlConStrAlpha"] =     /**/ $"Server={server};Database=Alpha;     Trusted_Connection=True;Connection Timeout=52";
-    config["SqlConStrBanking"] =   /**/ $"Server={server};Database=Banking;   Trusted_Connection=True;Connection Timeout=52";
-    config["SqlConStrInventory"] = /**/ $"Server={server};Database=Inventory; Trusted_Connection=True;Connection Timeout=52";
+    config["SqlConStrSansSnD"] = "Server={0};     Database={1};       Trusted_Connection=True;Connection Timeout=52";
+    config["LclDb"] = "Data Source=(localdb)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\alexp\\OneDrive\\Public\\AppData\\PowerShellLog\\PowerShellLog.mdf;Integrated Security=True;Connect Timeout=17;";
 
 #if !true
       var appConfig = new AppConfig();

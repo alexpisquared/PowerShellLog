@@ -1,5 +1,9 @@
-﻿using AAV.Sys.Helpers;
-using AAV.WPF.AltBpr;
+﻿using System;
+using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Markup;
+using AAV.Sys.Helpers;
 using AAV.WPF.Helpers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,14 +11,6 @@ using Microsoft.Extensions.DependencyInjection; // see the links below!!!
 using Microsoft.Extensions.Logging;
 using PowerShellLog.Db.DbModel;
 using PowerShellLog.Helpers;
-//using Serilog;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reflection;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Markup;
 
 namespace PowerShellLog
 {
@@ -35,35 +31,35 @@ namespace PowerShellLog
 
       Sep 2019:      Dependency Injection for .Net Core Console running in Docker      https://www.youtube.com/watch?v=2TgWRfOnOc0
     */
-    ServiceProvider _serviceProvider;
+    readonly ServiceProvider _serviceProvider;
 
     public App()
     {
       var services = new ServiceCollection();
 
-      services.AddSingleton<MainWindow>();
-      //?or:  .AddTransient<MainWindow>();
-      //?or:  .AddTransient(typeof(MainWindow));
-
       _ = services.AddSingleton<IConfigurationRoot>(ConfigHelper.AutoInitConfigHardcoded());
 
-      _ = services.AddSingleton<ILogger>(sp => SeriLogHelper.InitLoggerFactory( //todo: this allows to override by UserSettings entry: UserSettingsIPM.UserLogFolderFile ??= // if new - store in usersettings for next uses.
+      _ = services.AddSingleton<ILogger<Window>>(sp => SeriLogHelper.InitLoggerFactory( //todo: this allows to override by UserSettings entry: UserSettingsIPM.UserLogFolderFile ??= // if new - store in usersettings for next uses.
         Helpers.FSHelper.GetCreateSafeLogFolderAndFile(new[]
         {
-            sp.GetRequiredService<IConfigurationRoot>()["LogFolder"].Replace("..", $"{(Assembly.GetExecutingAssembly().GetName().Name??"Unkwn")[..5]}.{Environment.UserName[..3]}.."),
-          @$"..\Logs\",@$"\Temp\Logs\"})).CreateLogger<MainWindow>());
+          //  sp.GetRequiredService<IConfigurationRoot>()["LogFolder"].Replace("..", $"{(Assembly.GetExecutingAssembly().GetName().Name??"Unkwn")[..5]}.{Environment.UserName[..3]}.."),          
+          @$"..\Logs\",@$"\Temp\Logs\"
+        })).CreateLogger<MainWindow>());
 
-      //_ = services.AddSingleton<IAddChild, MainWindow>(); // (sp => new MainView(sp.GetRequiredService<ILogger>(), sp.GetRequiredService<IConfigurationRoot>(), sp.GetRequiredService<InventoryContext>(), _started));
+      _ = services.AddSingleton<IAddChild, MainWindow>();//(sp => new MainWindow(sp.GetRequiredService<ILogger<Window>>(), sp.GetRequiredService<A0DbContext>()));
+      //_ = services.AddSingleton<MainWindow>();
 
       _serviceProvider = services.BuildServiceProvider();
 
       services.AddDbContext<A0DbContext>(optionsBuilder =>
       {
-        IConfigurationRoot? Configuration = _serviceProvider?.GetRequiredService<IConfigurationRoot>();
-        optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ad"));
+        optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>()["LclDb"]);
+        //optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb"));
       });
+
+      _serviceProvider = services.BuildServiceProvider();
+
     }
-    void configureServices(IServiceCollection serviceCollection) { }
 
     ////serilog 
     //public static IServiceCollection AddSerilogServices(/*this */IServiceCollection services, LoggerConfiguration configuration)
@@ -92,7 +88,7 @@ namespace PowerShellLog
       //MessageBox.Show("OnStartup 2/n");
       Current.DispatcherUnhandledException += UnhandledExceptionHndlr.OnCurrentDispatcherUnhandledException;
       EventManager.RegisterClassHandler(typeof(TextBox), TextBox.GotFocusEvent, new RoutedEventHandler((s, re) => { (s as TextBox).SelectAll(); }));
-      Tracer.SetupTracingOptions("PowerShellLog", new TraceSwitch("Verbose-ish", "See ScrSvr for the model.") { Level = TraceLevel.Verbose }, false);
+      //Tracer.SetupTracingOptions("PowerShellLog", new TraceSwitch("Verbose-ish", "See ScrSvr for the model.") { Level = TraceLevel.Verbose }, false);
 
 #if DI
       //cnf 2/2:
@@ -102,8 +98,9 @@ namespace PowerShellLog
       //Configuration = builder.Build();
       //Console.WriteLine(configuration.GetConnectionString("BloggingDatabase"));
 
-      // app initDI();
-      _serviceProvider.GetService<MainWindow>()?.Show(); // <= an overkill DI demo of: 
+      MainWindow = (Window)_serviceProvider.GetRequiredService<IAddChild>();
+      MainWindow.Show();
+
 #else
       new MainWindow().Show();
 #endif

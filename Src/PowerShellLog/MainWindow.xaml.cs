@@ -1,33 +1,36 @@
-﻿using AAV.WPF.Ext;
-using PowerShellLog.Db.DbModel;
-using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using PowerShellLog.Db.Common;
 using AAV.Sys.Helpers;
-using Microsoft.Extensions.Logging;
+using AAV.WPF.Ext;
 using Microsoft.Data.SqlClient;
-using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using PowerShellLog.Db.Common;
+using PowerShellLog.Db.DbModel;
 
 namespace PowerShellLog
 {
   public partial class MainWindow : AAV.WPF.Base.WindowBase
   {
-    readonly A0DbContext _db = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
+    readonly A0DbContext _db; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
     readonly CollectionViewSource _cvsEmails;
     const string _badCmd = "DO NOT USE", _noui_updatedbonly = "NoUi_UpdateDbOnly";
     Cmd? _selectCmd;
 
-    readonly ILogger<MainWindow> _logger;
-    public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>()) { }
-    public MainWindow(ILogger<MainWindow> logger)
+    readonly ILogger<Window> _logger;
+
+    //public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>(), A0DbContext.GetLclFl) { }
+    public MainWindow(ILogger<Window> logger, A0DbContext dbContext)
     {
-      _logger = logger;
+      _logger = //logger;
+                new LoggerFactory().CreateLogger<Window>();
+
+      _db = dbContext;
       Opacity = Environment.CommandLine.Contains(_noui_updatedbonly) ? 0 : 1;
 
       InitializeComponent();
@@ -40,6 +43,8 @@ namespace PowerShellLog
       tbxSearch.Focus();
 
       themeSelector1.ApplyTheme = ApplyTheme;
+
+      Topmost = Debugger.IsAttached;
 
 #if DI
       try
@@ -63,7 +68,7 @@ namespace PowerShellLog
 #endif
     }
 
-    async Task load() // A0DbContext _db, Action doSearch, Func<Task> fsToDbLoad)
+    async Task LoadAsync() // A0DbContext _db, Action doSearch, Func<Task> fsToDbLoad)
     {
       //Debug.WriteLine($"** _db.ServerDatabase(): {_db.ServerDatabase()}");
 
@@ -105,7 +110,8 @@ namespace PowerShellLog
     }
     public async Task LoadTablesAsync(A0DbContext db)
     {
-      try      {
+      try
+      {
         var lsw = Stopwatch.StartNew();
         await db.Log.OrderByDescending(r => r.Id).LoadAsync();
         await db.Cmd.Where(r => (string.IsNullOrEmpty(r.Note) || !r.Note.StartsWith(_badCmd))).OrderByDescending(r => r.Id).LoadAsync();
@@ -127,7 +133,7 @@ namespace PowerShellLog
     public string SrchF { get => (string)GetValue(SrchFProperty); set => SetValue(SrchFProperty, value); }
     static void callbk(DependencyObject d, DependencyPropertyChangedEventArgs e) { if (e.NewValue is string) (d as MainWindow)?.doSearch((e.NewValue as string)?.ToLowerInvariant() ?? "<null>"); }
 
-    async void onLoaded(object s, RoutedEventArgs e) => await load();// _db, doSearch, fsToDbLoad);
+    async void onLoaded(object s, RoutedEventArgs e) => await LoadAsync();// _db, doSearch, fsToDbLoad);
     async void onClose(object s, RoutedEventArgs e)
     {
       var rowsSaved = await _db.SaveChangesAsync();
