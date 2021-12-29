@@ -53,7 +53,10 @@ namespace PowerShellLog
 
       services.AddDbContext<A0DbContext>(optionsBuilder =>
       {
-        optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>()["LclDb"]);
+        Trace.WriteLine($"*** WhereAmI: {_serviceProvider?.GetRequiredService<IConfigurationRoot>()["WhereAmI"]}");
+        Trace.WriteLine($"***    LclDb: {_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb")}");
+
+        optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb"));
         //optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb"));
       });
 

@@ -22,6 +22,7 @@ using PowerShellLog.Db.Common;
 using AAV.Sys.Helpers;
 //using Microsoft.Extensions.Logging;
 using Microsoft.Data.SqlClient;
+using System.Windows.Markup;
 
 
 namespace PowerShellLog.Helpers;
@@ -87,12 +88,12 @@ public class ConfigHelper
     config["WhereAmI"] = "-* In Mem *-";
     config["LogFolder"] = new[] { "D21-MJ0AWBEV", "RAZER1" }.Contains(Environment.MachineName) ? "C:\\g\\CI-Reimagined-Invention\\Src\\CI-RI\\BE.IncomePayment\\bin\\Logs\\CI.IPM..log" : "\\\\bbsfile01\\Public\\Dev\\AlexPi\\Misc\\Logs\\..log";
     config["SqlConStrSansSnD"] = "Server={0};     Database={1};       Trusted_Connection=True;Connection Timeout=52";
-    config["LclDb"] = "Data Source=(localdb)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\alexp\\OneDrive\\Public\\AppData\\PowerShellLog\\PowerShellLog.mdf;Integrated Security=True;Connect Timeout=17;";
+    config["ConnectionStrings:LclDb"] = "Data Source=(localdb)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\alexp\\OneDrive\\Public\\AppData\\PowerShellLog\\PowerShellLog.mdf;Integrated Security=True;Connect Timeout=17;";
 
-#if !true
+#if true
       var appConfig = new AppConfig();
       config.Bind(appConfig);
-      string json = JsonConvert.SerializeObject(appConfig);
+      string json = Newtonsoft.Json.JsonConvert.SerializeObject(appConfig);
       File.WriteAllText("exported-" + _appSettingsFileNameOnly, json);
 #endif
 
@@ -107,15 +108,8 @@ public class ConfigHelper
       ""ServerList"":           "".\\sqlexpress mtDEVsqldb,1625 mtUATsqldb mtPRDsqldb"",
       ""SqlConStrSansSnD"":     ""Server={{0}};Database={{1}};          Trusted_Connection=True;Connection Timeout=52"",
       ""SqlConStrBR"":          ""Server={{server}};Database=BR;        Trusted_Connection=True;Connection Timeout=52"",
-      ""SqlConStrVBCM"":        ""Server={{server}};Database=VBCM;      Trusted_Connection=True;Connection Timeout=52"",
-      ""SqlConStrAlpha"":       ""Server={{server}};Database=Alpha;     Trusted_Connection=True;Connection Timeout=52"",
-      ""SqlConStrBanking"":     ""Server={{server}};Database=Banking;   Trusted_Connection=True;Connection Timeout=52"",
-      ""SqlConStrInventory"":   ""Server={{server}};Database=Inventory; Trusted_Connection=True;Connection Timeout=52"",
-      ""AppSettings"": {{
-        ""ServerList"":         "".\\sqlexpress mtDEVsqldb mtUATsqldb mtPRDsqldb"",
-        ""KeyVaultURL"":        ""<moved to a safer place>"",
-        ""LastSaved"":          ""{2}""
-      }}
+
+      ""ConnectionStrings:LclDb"": ""Data Source=(localdb)\\MSSQLLocalDB;AttachDbFilename=C:\\Users\\alexp\\OneDrive\\Public\\AppData\\PowerShellLog\\PowerShellLog.mdf;Integrated Security=True;Connect Timeout=17;""
 }}";
   static bool TryCreateDefaultFile(string appsettingsPathFileExt, string defaultValues, bool enforceCreation)
   {
@@ -155,12 +149,7 @@ public class ConfigHelper
   {
     public string WhereAmI { get; set; } = "";
     public string LogFolder { get; set; } = "";
-    public string ServerList { get; set; } = "";
     public string SqlConStrSansSnD { get; set; } = "";
     public string SqlConStrBR { get; set; } = "";
-    public string SqlConStrVBCM { get; set; } = "";
-    public string SqlConStrAlpha { get; set; } = "";
-    public string SqlConStrBanking { get; set; } = "";
-    public string SqlConStrInventory { get; set; } = "";
   }
 }

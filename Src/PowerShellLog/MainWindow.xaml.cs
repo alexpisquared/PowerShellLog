@@ -27,8 +27,8 @@ namespace PowerShellLog
     //public MainWindow() : this(new LoggerFactory().CreateLogger<MainWindow>(), A0DbContext.GetLclFl) { }
     public MainWindow(ILogger<Window> logger, A0DbContext dbContext)
     {
-      _logger = //logger;
-                new LoggerFactory().CreateLogger<Window>();
+      _logger = logger;
+                //new LoggerFactory().CreateLogger<Window>();
 
       _db = dbContext;
       Opacity = Environment.CommandLine.Contains(_noui_updatedbonly) ? 0 : 1;
