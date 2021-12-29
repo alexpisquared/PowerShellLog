@@ -1,13 +1,20 @@
 ﻿using AAV.Sys.Helpers;
+using AAV.WPF.AltBpr;
 using AAV.WPF.Helpers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection; // see the links below!!!
 using Microsoft.Extensions.Logging;
-using Serilog;
+using PowerShellLog.Db.DbModel;
+using PowerShellLog.Helpers;
+//using Serilog;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Markup;
 
 namespace PowerShellLog
 {
@@ -15,7 +22,7 @@ namespace PowerShellLog
   {
     static readonly DateTime _started = DateTime.Now;
 
-    #region DI & Logging:
+    //#region DI & Logging:
     /* 
     // https://michaelscodingspot.com/logging-in-dotnet/            //todo: Use SeriLog from here too!
     //
@@ -29,50 +36,42 @@ namespace PowerShellLog
       Sep 2019:      Dependency Injection for .Net Core Console running in Docker      https://www.youtube.com/watch?v=2TgWRfOnOc0
     */
     ServiceProvider _serviceProvider;
-    static TraceListener _traceListener;
 
-    void initDI() //nogo:  App() { ...  <== ctor runs AFTER Startup !!!
+    public App()
     {
-      //MessageBox.Show("CTor 1/n");
+      var services = new ServiceCollection();
 
-      var serviceCollection = new ServiceCollection();
+      services.AddSingleton<MainWindow>();
+      //?or:  .AddTransient<MainWindow>();
+      //?or:  .AddTransient(typeof(MainWindow));
 
-      //configureServices(serviceCollection);
-      var file = Tracer.GetLogPathFileName("PowerShellLog.c3", false);
-      var stream = File.AppendText(file);
-      stream.AutoFlush = true;
-      _traceListener = new TextWriterTraceListener(stream.BaseStream);
+      _ = services.AddSingleton<IConfigurationRoot>(ConfigHelper.AutoInitConfigHardcoded());
 
-      serviceCollection.AddLogging(configure =>
+      _ = services.AddSingleton<ILogger>(sp => SeriLogHelper.InitLoggerFactory( //todo: this allows to override by UserSettings entry: UserSettingsIPM.UserLogFolderFile ??= // if new - store in usersettings for next uses.
+        Helpers.FSHelper.GetCreateSafeLogFolderAndFile(new[]
+        {
+            sp.GetRequiredService<IConfigurationRoot>()["LogFolder"].Replace("..", $"{(Assembly.GetExecutingAssembly().GetName().Name??"Unkwn")[..5]}.{Environment.UserName[..3]}.."),
+          @$"..\Logs\",@$"\Temp\Logs\"})).CreateLogger<MainWindow>());
+
+      //_ = services.AddSingleton<IAddChild, MainWindow>(); // (sp => new MainView(sp.GetRequiredService<ILogger>(), sp.GetRequiredService<IConfigurationRoot>(), sp.GetRequiredService<InventoryContext>(), _started));
+
+      _serviceProvider = services.BuildServiceProvider();
+
+      services.AddDbContext<A0DbContext>(optionsBuilder =>
       {
-        configure
-          //?.AddSerilog(dispose: true)
-          //?.AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(Configuration).CreateLogger(), dispose: true)
-          //?.AddConfiguration(configuration.GetSection("Logging"))
-          .AddTraceSource(new SourceSwitch("TraceSourceLog", SourceLevels.Verbose.ToString()), _traceListener) // must be unique since "...because it is being used by another process".
-          .AddConsole()
-#if DEBUG    
-          .AddDebug()
-#endif
-          ;
+        IConfigurationRoot? Configuration = _serviceProvider?.GetRequiredService<IConfigurationRoot>();
+        optionsBuilder.UseSqlServer(Configuration.GetConnectionString("ad"));
       });
-
-
-      serviceCollection.AddSingleton<MainWindow>();
-      //?or: serviceCollection.AddTransient<MainWindow>();
-      //?or: serviceCollection.AddTransient(typeof(MainWindow));
-
-      _serviceProvider = serviceCollection.BuildServiceProvider();
     }
     void configureServices(IServiceCollection serviceCollection) { }
 
-    //serilog 
-    public static IServiceCollection AddSerilogServices(/*this */IServiceCollection services, LoggerConfiguration configuration)
-    {
-      Log.Logger = configuration.CreateLogger();
-      AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
-      return services.AddSingleton(Log.Logger);
-    }
+    ////serilog 
+    //public static IServiceCollection AddSerilogServices(/*this */IServiceCollection services, LoggerConfiguration configuration)
+    //{
+    //  Log.Logger = configuration.CreateLogger();
+    //  AppDomain.CurrentDomain.ProcessExit += (s, e) => Log.CloseAndFlush();
+    //  return services.AddSingleton(Log.Logger);
+    //}
 
     //cnf 1/2:
     //Microsoft.Extensions.Configuration
@@ -84,7 +83,7 @@ namespace PowerShellLog
     //    "ConnectionStrings": { "BloggingDatabase": "Server=(localdb)\\mssqllocaldb;Database=EFGetStarted.ConsoleApp.NewDb;Trusted_Connection=True;" }
     //  }    
 
-    #endregion
+    //#endregion
 
     protected override void OnStartup(StartupEventArgs e)
     {
@@ -103,8 +102,8 @@ namespace PowerShellLog
       //Configuration = builder.Build();
       //Console.WriteLine(configuration.GetConnectionString("BloggingDatabase"));
 
-      initDI();
-      _serviceProvider.GetService<MainWindow>().Show(); // <= an overkill DI demo of: 
+      // app initDI();
+      _serviceProvider.GetService<MainWindow>()?.Show(); // <= an overkill DI demo of: 
 #else
       new MainWindow().Show();
 #endif

@@ -12,6 +12,7 @@ using PowerShellLog.Db.Common;
 using AAV.Sys.Helpers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Data.SqlClient;
+using System.Text.RegularExpressions;
 
 namespace PowerShellLog
 {
@@ -87,7 +88,7 @@ namespace PowerShellLog
 
     async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_db, srcFileMode);
     void doSearch(string match = "") => DoSearch(match, _db, _cvsEmails, tbkTtl, _logger);
-    public  void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, ILogger _logger)
+    public void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, ILogger _logger)
     {
       try
       {
@@ -104,18 +105,21 @@ namespace PowerShellLog
     }
     public async Task LoadTablesAsync(A0DbContext db)
     {
-      var lsw = Stopwatch.StartNew();
-      await db.Log.OrderByDescending(r => r.Id).LoadAsync();
-      await db.Cmd.Where(r => (string.IsNullOrEmpty(r.Note) || !r.Note.StartsWith(_badCmd))).OrderByDescending(r => r.Id).LoadAsync();
+      try      {
+        var lsw = Stopwatch.StartNew();
+        await db.Log.OrderByDescending(r => r.Id).LoadAsync();
+        await db.Cmd.Where(r => (string.IsNullOrEmpty(r.Note) || !r.Note.StartsWith(_badCmd))).OrderByDescending(r => r.Id).LoadAsync();
 
-      Trace.WriteLine($">>> Loaded  Cmds/Logs {db.Cmd.Local.Count,7} / {db.Log.Local.Count,-7} rows in  {lsw.Elapsed.TotalSeconds:N2} s:");
+        Trace.WriteLine($">>> Loaded  Cmds/Logs {db.Cmd.Local.Count,7} / {db.Log.Local.Count,-7} rows in  {lsw.Elapsed.TotalSeconds:N2} s:");
 
-      var l = db.Log.Local.GroupBy(p => p.Machine).Select(g => new { name = g.Key, count = g.Count(), last = g.Max(x => x.AddedAt) }).OrderByDescending(r => r.last);
-      l.ToList().ForEach(q => Trace.WriteLine($"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  "));
+        var l = db.Log.Local.GroupBy(p => p.Machine).Select(g => new { name = g.Key, count = g.Count(), last = g.Max(x => x.AddedAt) }).OrderByDescending(r => r.last);
+        l.ToList().ForEach(q => Trace.WriteLine($"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  "));
 
-      tbkHist.Text = string.Join("\n", l.Take(3).Select(q => $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  ").ToList());
+        tbkHist.Text = string.Join("\n", l.Take(3).Select(q => $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  ").ToList());
 
-      //l.ToList().ForEach(q => tbkhist.Text += $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  \n");
+        //l.ToList().ForEach(q => tbkhist.Text += $"   {q.last:yyyy-MM-dd HH:mm}   {q.name,-14}{q.count,5}  \n");
+      }
+      catch (Exception ex) { _logger.LogError(ex, $"{nameof(LoadTablesAsync)}({db}).."); ex.Pop(this); }
     }
 
     public static readonly DependencyProperty SrchFProperty = DependencyProperty.Register("SrchF", typeof(string), typeof(MainWindow), new PropertyMetadata("", new PropertyChangedCallback(callbk)));
