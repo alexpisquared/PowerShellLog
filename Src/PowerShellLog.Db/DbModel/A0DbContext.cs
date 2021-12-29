@@ -6,10 +6,11 @@ namespace PowerShellLog.Db.DbModel;
 public partial class A0DbContext : DbContext
 {
   const string _dbSubP = @"Public\AppData\PowerShellLog\";
+  static string _un="Replace with the valid username", _pw = "Replace with the valid password"; //todo: MOVE to IsoStore.
   static readonly string
     lclFl = $@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename={OneDrive.Folder($@"{_dbSubP}PowerShellLog.mdf")};Integrated Security=True;Connect Timeout=17;",
     exprs = $@"data source=.\sqlexpress;initial catalog=PowerShellLog;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework",
-    azure = $"data source=sqs.database.windows.net;initial catalog=PowerShellLog;persist security info=True;user id=_un;password=\"_pw\";MultipleActiveResultSets=True;App=EntityFramework",
+    azure = $"data source=sqs.database.windows.net;initial catalog=PowerShellLog;persist security info=True;user id={_un};password=\"{_pw}\";MultipleActiveResultSets=True;App=EntityFramework",
     confg = "name=A0DbContext";
   readonly string _constr;
 
