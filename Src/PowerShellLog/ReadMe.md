@@ -10,3 +10,6 @@ Uncommenting will cause the Exception:
       package: 'Microsoft.EntityFrameworkCore.Design', version: '3.1.0'
       path: 'lib/netstandard2.0/Microsoft.EntityFrameworkCore.Design.dll'
 
+
+#2021-12-29
+Prototyping User Secrets proper store through the Connected Services feature.
