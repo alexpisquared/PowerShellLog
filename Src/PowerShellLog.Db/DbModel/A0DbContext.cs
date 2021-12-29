@@ -5,25 +5,25 @@ namespace PowerShellLog.Db.DbModel;
 
 public partial class A0DbContext : DbContext
 {
-  const string _dbSubP = @"Public\AppData\PowerShellLog\";
-  static string _un, _pw; // GitGuradian only
-  static readonly string
-    lclFl = $@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename={OneDrive.Folder($@"{_dbSubP}PowerShellLog.mdf")};Integrated Security=True;Connect Timeout=17;",
-    exprs = $@"data source=.\sqlexpress;initial catalog=PowerShellLog;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework",
-    azure = $"data source=sqs.database.windows.net;initial catalog=PowerShellLog;persist security info=True;user id={_un};password=\"{_pw}\";MultipleActiveResultSets=True;App=EntityFramework",
-    confg = "name=A0DbContext";
-  readonly string _constr;
+  //const string _dbSubP = @"Public\AppData\PowerShellLog\";
+  //static string _un, _pw; // GitGuradian only
+  //static readonly string
+  //  lclFl = $@"Data Source=(localdb)\MSSQLLocalDB;AttachDbFilename={OneDrive.Folder($@"{_dbSubP}PowerShellLog.mdf")};Integrated Security=True;Connect Timeout=17;",
+  //  exprs = $@"data source=.\sqlexpress;initial catalog=PowerShellLog;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework",
+  //  azure = $"data source=sqs.database.windows.net;initial catalog=PowerShellLog;persist security info=True;user id={_un};password=\"{_pw}\";MultipleActiveResultSets=True;App=EntityFramework",
+  //  confg = "name=A0DbContext";
+  //readonly string _constr;
 
-  public static A0DbContext GetLclFl => _LclFl;
-  public static string Constr_LclFl => lclFl;
+  //public static A0DbContext GetLclFl => _LclFl;
+  //public static string Constr_LclFl => lclFl;
 
-  static A0DbContext _Exprs => new A0DbContext(exprs);
-  static A0DbContext _LclFl => new A0DbContext(lclFl);
-  static A0DbContext _Azure => new A0DbContext(azure);
-  static A0DbContext _Confg => new A0DbContext(confg);
+  //static A0DbContext _Exprs => new A0DbContext(exprs);
+  //static A0DbContext _LclFl => new A0DbContext(lclFl);
+  //static A0DbContext _Azure => new A0DbContext(azure);
+  //static A0DbContext _Confg => new A0DbContext(confg);
 
-  public A0DbContext() : this(constr: lclFl) { } // for EF-based controllers: parameterless ctor is needed!!!
-  A0DbContext(string constr) : base() => _constr = constr;
+  //public A0DbContext() : this(constr: lclFl) { } // for EF-based controllers: parameterless ctor is needed!!!
+  //A0DbContext(string constr) : base() => _constr = constr;
 
   public A0DbContext(DbContextOptions<A0DbContext> options)
       : base(options)
@@ -37,11 +37,11 @@ public partial class A0DbContext : DbContext
 
   protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
   {
-    if (!optionsBuilder.IsConfigured)
-    {
-      //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-      optionsBuilder.UseSqlServer(_constr); // ("Server=.\\SQLExpress;Database=PowerShellLog;Trusted_Connection=True;");
-    }
+    //if (!optionsBuilder.IsConfigured)
+    //{
+    //  //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
+    //  optionsBuilder.UseSqlServer(_constr); // ("Server=.\\SQLExpress;Database=PowerShellLog;Trusted_Connection=True;");
+    //}
   }
 
   protected override void OnModelCreating(ModelBuilder modelBuilder)

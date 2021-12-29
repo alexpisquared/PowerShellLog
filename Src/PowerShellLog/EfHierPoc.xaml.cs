@@ -11,10 +11,9 @@ namespace PowerShellLog
 {
   public partial class EfHierPoc : Window
   {
-    readonly A0DbContext _db = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
     readonly CollectionViewSource _cvsEmails;
-    private readonly ILogger<Window> _logger;
-    private readonly A0DbContext _dbContext;
+    readonly ILogger<Window> _logger;
+    readonly A0DbContext _db; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
 
     public EfHierPoc(ILogger<Window> logger, A0DbContext dbContext)
     {
@@ -25,7 +24,7 @@ namespace PowerShellLog
 
       tbxSearch.Focus();
       _logger = logger;
-      _dbContext = dbContext;
+      _db = dbContext;
     }
 
     async void onLoaded(object s, RoutedEventArgs e) => await load();
@@ -51,7 +50,7 @@ namespace PowerShellLog
 
       try
       {
-        var mw = new MainWindow(_logger, _dbContext);
+        var mw = new MainWindow(_logger, _db);
         await mw.LoadTablesAsync(_db);
         mw.DoSearch("", _db, _cvsEmails, tbkTtl, _logger);
       }

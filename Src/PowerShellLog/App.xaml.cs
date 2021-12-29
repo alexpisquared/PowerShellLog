@@ -56,8 +56,7 @@ namespace PowerShellLog
         Trace.WriteLine($"*** WhereAmI: {_serviceProvider?.GetRequiredService<IConfigurationRoot>()["WhereAmI"]}");
         Trace.WriteLine($"***    LclDb: {_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb")}");
 
-        optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb"));
-        //optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb"));
+        optionsBuilder.UseSqlServer(_serviceProvider?.GetRequiredService<IConfigurationRoot>().GetConnectionString("LclDb") ?? throw new ArgumentNullException(".GetConnectionString('LclDb')"));
       });
 
       _serviceProvider = services.BuildServiceProvider();
