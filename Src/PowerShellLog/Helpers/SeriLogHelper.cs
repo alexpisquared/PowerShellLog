@@ -2,44 +2,41 @@
 using Microsoft.Extensions.Logging;
 using Serilog;
 
-namespace PowerShellLog.Helpers
-{
-  public class SeriLogHelper
-  {
-    public static ILoggerFactory InitLoggerFactory(string logFolder) => LoggerFactory.Create(builder =>
-    {
-      Trace.WriteLine($"TrWL:/> {logFolder}\nTrWL:/> {logFolder.Replace("..", ".ERR..")}");
+namespace PowerShellLog.Helpers;
 
-      var loggerConfiguration =
-        Debugger.IsAttached ?
-          new LoggerConfiguration().WriteTo.Debug().MinimumLevel.Information() :
-          new LoggerConfiguration()
-              .MinimumLevel.Verbose()
-              .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
-              .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
-              .Enrich.FromLogContext() // .Enrich.WithMachineName().Enrich.WithThreadId()                                       
+public class SeriLogHelper
+{
+  public static ILoggerFactory InitLoggerFactory(string logFolder) => LoggerFactory.Create(builder =>
+  {
+    Trace.WriteLine($"TrWL:/> {logFolder}\nTrWL:/> {logFolder.Replace("..", ".ERR..")}");
+
+    var loggerConfiguration =
+      Debugger.IsAttached ?
+        new LoggerConfiguration().WriteTo.Debug().MinimumLevel.Information() :
+        new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .MinimumLevel.Override("Microsoft", Serilog.Events.LogEventLevel.Warning)
+            .MinimumLevel.Override("System", Serilog.Events.LogEventLevel.Warning)
+            .Enrich.FromLogContext() // .Enrich.WithMachineName().Enrich.WithThreadId()                                       
 #if DEBUG
-              .WriteTo.File(path: @$"{logFolder.Replace("..", ".Dbg.Infi..")}", rollingInterval: RollingInterval.Infinite)
+              .WriteTo.File(path: @$"{logFolder.Replace("..", ".Dbg.Infi..")}", rollingInterval: RollingInterval.Infinite);
 #else
               .WriteTo.File(path: @$"{logFolder.Replace("..", ".Lite..")}", rollingInterval: RollingInterval.Day)
             //.WriteTo.File(path: @$"{logFolder.Replace("..", ".Verb..")}", outputTemplate: _template, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose, rollingInterval: RollingInterval.Day)
             //.WriteTo.File(path: @$"{logFolder.Replace("..", ".Warn..")}", outputTemplate: _template, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Warning, rollingInterval: RollingInterval.Day)
               .WriteTo.File(path: @$"{logFolder.Replace("..", ".Er▄▀..")}", outputTemplate: _template, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day)
             //.WriteTo.File(path: @$"{logFolder.Replace("..", ".11mb..").Replace(".log", ".json")}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose, rollOnFileSizeLimit: true, fileSizeLimitBytes: 11000000, formatter: new Serilog.Formatting.Json.JsonFormatter()) - useful only with log aggregators.
-#endif
               ;
+  const string _template = "{Timestamp:HH:mm:ss.fff}\tMessage:{Message}\tLevel:{Level:w3}\tSourceContext:{SourceContext}{NewLine}{Exception}";
+#endif
 
       _ = builder.AddSerilog(loggerConfiguration.CreateLogger());
-    });
-    public static ILoggerFactory InitLoggerFactory() => LoggerFactory.Create(builder => // :mostly for unit testing.
-    {
-      var loggerConfiguration = new LoggerConfiguration().WriteTo.Debug().MinimumLevel.Information();
+  });
+  public static ILoggerFactory InitLoggerFactory() => LoggerFactory.Create(builder => // :mostly for unit testing.
+  {
+    _ = builder.AddSerilog(new LoggerConfiguration().WriteTo.Debug().MinimumLevel.Information().CreateLogger());
+  });
 
-      _ = builder.AddSerilog(loggerConfiguration.CreateLogger());
-    });
-
-    const string _template = "{Timestamp:HH:mm:ss.fff}\tMessage:{Message}\tLevel:{Level:w3}\tSourceContext:{SourceContext}{NewLine}{Exception}";
-  }
 }
 /*  static Logger ConfigSerilogger()
     {
