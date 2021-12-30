@@ -1,9 +1,5 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
+﻿using System.Diagnostics;
 using System.Reflection;
-using AAV.Sys.Ext;
-using AAV.WPF.Ext;
 using Microsoft.Extensions.Configuration;
 
 namespace PowerShellLog.Helpers;
@@ -35,27 +31,28 @@ public class ConfigHelper
         }
         catch (InvalidOperationException ex)
         {
-          MessageBox.Show
-          ex.Pop(null, optl: "Disaster ...");
+          Trace.WriteLine(ex.ToString()); // ex.Pop(null, optl: "Disaster ...");
         }
         catch (FileNotFoundException ex)
         {
           if (!TryCreateDefaultFile(appsettingsFile, defaultValues, enforceCreation))
-            _ = ex.Log("Retrying 3 times ...");
+          {
+            Trace.WriteLine(ex.ToString()); throw; // _ = ex.Log("Retrying 3 times ...");
+          }
         }
         catch (FormatException ex)
         {
           _ = new Process { StartInfo = new ProcessStartInfo("Notepad.exe", $"\"{appsettingsFile}\"") { RedirectStandardError = true, UseShellExecute = false } }.Start();
-          ex.Pop(null, optl: $"Try to edit the errors out from \n\t {appsettingsFile}");
+          Trace.WriteLine(ex.ToString()); throw; // ex.Pop(null, optl: $"Try to edit the errors out from \n\t {appsettingsFile}");
         }
         catch (Exception ex)
         {
           if (!TryCreateDefaultFile(appsettingsFile, defaultValues, enforceCreation))
-            ex.Pop(null, optl: "██  ██  ██  Take a look!");
+          { Trace.WriteLine(ex.ToString()); throw; }// ex.Pop(null, optl: "██  ██  ██  Take a look!");
         }
       }
 
-      new Exception().Pop(null, optl: $"Unable to create default  {appsettingsFile}  file  {i}/{max} times.");
+      throw new Exception($"Unable to create default  {appsettingsFile}  file  {i}/{max} times."); // new Exception().Pop(null, optl: $"Unable to create default  {appsettingsFile}  file  {i}/{max} times.");
     }
 
     return AutoInitConfigHardcoded(defaultValues, enforceCreation);
@@ -120,10 +117,14 @@ public class ConfigHelper
     catch (FormatException ex)
     {
       _ = new Process { StartInfo = new ProcessStartInfo("Notepad.exe", $"\"{appsettingsPathFileExt}\"") { RedirectStandardError = true, UseShellExecute = false } }.Start();
-      ex.Pop(null, optl: $"Try to edit the errors out from \n\t {appsettingsPathFileExt}");
+      Trace.WriteLine(ex.ToString()); //throw; // ex.Pop(null, optl: $"Try to edit the errors out from \n\t {appsettingsPathFileExt}");
       return false;
     }
-    catch (Exception ex) { ex.Pop(null); return false; }
+    catch (Exception ex)
+    {
+      Trace.WriteLine(ex.ToString()); //throw; // ex.Pop(null);
+      return false;
+    }
   }
   class WhatIsThatForType { public string MyProperty { get; set; } = "<Default Value of Nothing Special>"; }
 
