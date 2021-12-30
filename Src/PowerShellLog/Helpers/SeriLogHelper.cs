@@ -30,7 +30,7 @@ public class SeriLogHelper
   const string _template = "{Timestamp:HH:mm:ss.fff}\tMessage:{Message}\tLevel:{Level:w3}\tSourceContext:{SourceContext}{NewLine}{Exception}";
 #endif
 
-    _ = builder.AddSerilog(loggerConfiguration.CreateLogger());
+      _ = builder.AddSerilog(loggerConfiguration.CreateLogger());
   });
   public static ILoggerFactory InitLoggerFactory() => LoggerFactory.Create(builder => // :mostly for unit testing.
   {

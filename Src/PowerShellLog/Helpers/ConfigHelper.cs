@@ -35,7 +35,6 @@ public class ConfigHelper
         }
         catch (InvalidOperationException ex)
         {
-          MessageBox.Show
           ex.Pop(null, optl: "Disaster ...");
         }
         catch (FileNotFoundException ex)
