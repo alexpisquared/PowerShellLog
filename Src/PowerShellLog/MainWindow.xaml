@@ -69,7 +69,8 @@
       <Style TargetType="{x:Type Button}"       BasedOn="{StaticResource BtnRoundd}" />
 
       <CollectionViewSource x:Key="cmdViewSource" d:DesignSource="{d:DesignInstance {x:Type Models:Cmd}, CreateList=True}"/>
-      <CollectionViewSource x:Key="cmdLogsViewSource" Source="{Binding Logs, Source={StaticResource cmdViewSource}}"/>
+      <CollectionViewSource x:Key="cmdLogsViewSource" Source="{Binding Log, Source={StaticResource cmdViewSource}}"/>
+      
     </ResourceDictionary>
   </lnk:WindowBase.Resources>
   <!--xmlns:Models="clr-namespace:PowerShellLog.Db.DbModel;assembly=PowerShellLog.Db"-->
@@ -169,12 +170,11 @@
         <TextBlock  Grid.Row="0" Margin="3" Text="{Binding CommandText}" />
         <TextBox    Grid.Row="1" Margin="3" Text="{Binding Note, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Height="120" TextWrapping="Wrap" />
         <Label      Grid.Row="2" Margin="3" Content="Log/History" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
-        <DataGrid   Grid.Row="3" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource cmdLogsViewSource}}" RowDetailsVisibilityMode="VisibleWhenSelected" 
-                Foreground="{StaticResource MainForegroundBrush}" x:Name="dghist">
+        <DataGrid   Grid.Row="3" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource cmdLogsViewSource}}" RowDetailsVisibilityMode="VisibleWhenSelected" Foreground="{StaticResource MainForegroundBrush}" x:Name="dghist">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Used at" Width="99" Binding="{Binding AddedAt, StringFormat=\{0:yyy-M-d HH:mm\}}" ToolTipService.ToolTip="{Binding LineNum}" />
-            <DataGridTextColumn Header="Machine" Width="*"  Binding="{Binding Machine}"                                   ToolTipService.ToolTip="{Binding Id}"      />
-            <DataGridTextColumn Header="Line"    Width="38" Binding="{Binding LineNum}"                                   ToolTipService.ToolTip="{Binding Id}"      />
+            <DataGridTextColumn Header="Used at" Width="99" Binding="{Binding AddedAt, StringFormat=\{0:yyy-M-d HH:mm\}}" />
+            <DataGridTextColumn Header="Machine" Width="*"  Binding="{Binding Machine}"                                   />
+            <DataGridTextColumn Header="Line"    Width="38" Binding="{Binding LineNum}"                                   />
             <!--        
             <DataGridTextColumn Header="Id"      Width="1*" Binding="{Binding Id, StringFormat=\{0\,6:N0\}}" />
             <DataGridTextColumn Binding="{Binding LineNum}" Header="Line Num" Width="*"/>
