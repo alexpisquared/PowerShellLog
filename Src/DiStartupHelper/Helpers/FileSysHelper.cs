@@ -1,9 +1,6 @@
-﻿using System;
-using System.IO;
+﻿namespace DiStartupHelper.Helpers;
 
-namespace PowerShellLog.Helpers;
-
-public static class FSHelper
+public static class FileSysHelper
 {
   public static string GetCreateSafeLogFolderAndFile(string[] fullPaths)
   {

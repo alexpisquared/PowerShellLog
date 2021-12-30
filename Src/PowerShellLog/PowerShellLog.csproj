@@ -11,11 +11,9 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>powershell.ico</ApplicationIcon>
-
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <UserSecretsId>3041b4d2-5db8-463b-89e6-24a9211e9973</UserSecretsId>
-
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineConstants>TRACE;DI</DefineConstants>
@@ -39,6 +37,7 @@
     <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.Sys\AAV.Sys.csproj" />
     <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.UI\AAV.UI.csproj" />
     <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.WPF\AAV.WPF.csproj" />
+    <ProjectReference Include="..\DiStartupHelper\DiStartupHelper.csproj" />
     <ProjectReference Include="..\PowerShellLog.Db\PowerShellLog.Db.csproj" />
   </ItemGroup>
   <ItemGroup>

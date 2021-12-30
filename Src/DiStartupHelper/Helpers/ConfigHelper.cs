@@ -1,14 +1,11 @@
-﻿using System.Diagnostics;
-using System.Reflection;
-using Microsoft.Extensions.Configuration;
-
-namespace PowerShellLog.Helpers;
+﻿
+namespace DiStartupHelper.Helpers;
 
 public class ConfigHelper
 {
   public static IConfigurationRoot AutoInitConfigFromFile(string defaultValues = _defaultAppSetValues, bool enforceCreation = false)
   {
-    const int max = 2;
+    const int max = 3;
 
     var appsettingsFiles = new[] {
         Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), @$"AppSettings\{AppDomain.CurrentDomain.FriendlyName}\{_appSettingsFileNameOnly}"),
@@ -20,7 +17,6 @@ public class ConfigHelper
     {
       int i;
       for (i = 0; i < max && TryCreateDefaultFile(appsettingsFile, defaultValues, enforceCreation); i++)
-      {
         try
         {
           return new ConfigurationBuilder()
@@ -31,7 +27,7 @@ public class ConfigHelper
         }
         catch (InvalidOperationException ex)
         {
-          Trace.WriteLine(ex.ToString()); // ex.Pop(null, optl: "Disaster ...");
+          Trace.WriteLine(ex.ToString());           throw;
         }
         catch (FileNotFoundException ex)
         {
@@ -50,7 +46,6 @@ public class ConfigHelper
           if (!TryCreateDefaultFile(appsettingsFile, defaultValues, enforceCreation))
           { Trace.WriteLine(ex.ToString()); throw; }// ex.Pop(null, optl: "██  ██  ██  Take a look!");
         }
-      }
 
       throw new Exception($"Unable to create default  {appsettingsFile}  file  {i}/{max} times."); // new Exception().Pop(null, optl: $"Unable to create default  {appsettingsFile}  file  {i}/{max} times.");
     }
@@ -106,7 +101,7 @@ public class ConfigHelper
 
       if (enforceCreation
         || !File.Exists(appsettingsPathFileExt)
-        || (DateTime.Now < new DateTime(2021, 9, 14) && Environment.MachineName != "RAZER1" && Environment.MachineName != "D21-MJ0AWBEV"))
+        || DateTime.Now < new DateTime(2021, 9, 14) && Environment.MachineName != "RAZER1" && Environment.MachineName != "D21-MJ0AWBEV")
       {
         File.WriteAllText(appsettingsPathFileExt, string.Format(defaultValues, appsettingsPathFileExt.Replace(@"\", @"\\"), Assembly.GetEntryAssembly()?.GetName().Name, DateTimeOffset.Now.ToString()));
         Trace.WriteLine($"TrWL:> ■ WARNING: overwrote this {appsettingsPathFileExt}.");

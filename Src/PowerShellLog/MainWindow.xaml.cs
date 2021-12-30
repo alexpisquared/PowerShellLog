@@ -95,7 +95,7 @@ namespace PowerShellLog
 
     async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_dbx, srcFileMode);
     void doSearch(string match = "") => DoSearch(match, _dbx, _cvsEmails, tbkTtl, _lgr);
-    public void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, ILogger _logger)
+    public void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, Microsoft.Extensions.Logging.ILogger _logger)
     {
       try
       {
