@@ -59,6 +59,9 @@
 
       <Style TargetType="{x:Type Button}"       x:Key="BtnRoundd" BasedOn="{StaticResource BtnBase}">
         <Setter Property="FocusVisualStyle"     Value="{x:Null}" />
+        <Setter Property="Height"               Value="32" />
+        <Setter Property="Margin"               Value="2" />
+        <Setter Property="Padding"              Value="9 2" />
         <Style.Resources>
           <Style TargetType="Border">
             <Setter Property="CornerRadius"     Value="16" />
@@ -73,7 +76,7 @@
     </ResourceDictionary>
   </lnk:WindowBase.Resources>
   <!--xmlns:Models="clr-namespace:PowerShellLog.Db.DbModel;assembly=PowerShellLog.Db"-->
-  <Border Style="{StaticResource BorderStyle_Aav0}">
+  <Border Style="{StaticResource BorderStyle_Aav0_Rad16}">
     <!--DataContext="{Binding Source={StaticResource SampleDataSource}}"-->
     <Grid Margin="6" x:Name="ZommablePanel" DataContext="{StaticResource cmdViewSource}">
       <Grid.LayoutTransform>
@@ -167,11 +170,11 @@
         </Grid.RowDefinitions>
 
         <TextBlock  Grid.Row="0" Margin="3" Text="{Binding CommandText}" />
-        <TextBox    Grid.Row="1" Margin="3" Text="{Binding Note, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Height="120" TextWrapping="Wrap" />
+        <TextBox    Grid.Row="1" Margin="3" Text="{Binding Note, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}" Height="120" TextWrapping="Wrap" HorizontalAlignment="Stretch" />
         <Label      Grid.Row="2" Margin="3" Content="Log/History" HorizontalAlignment="Left" VerticalAlignment="Bottom" />
         <DataGrid   Grid.Row="3" AutoGenerateColumns="False" EnableRowVirtualization="True" ItemsSource="{Binding Source={StaticResource cmdLogsViewSource}}" RowDetailsVisibilityMode="VisibleWhenSelected" Foreground="{StaticResource MainForegroundBrush}" x:Name="dghist">
           <DataGrid.Columns>
-            <DataGridTextColumn Header="Used at" Width="99" Binding="{Binding AddedAt, StringFormat=\{0:yyy-M-d HH:mm\}}" />
+            <DataGridTextColumn Header="Used at" Width="88" Binding="{Binding AddedAt, StringFormat=\{0:yyy-M-d HH:mm\}}" />
             <DataGridTextColumn Header="Machine" Width="*"  Binding="{Binding Machine}"                                   />
             <DataGridTextColumn Header="Line"    Width="38" Binding="{Binding LineNum}"                                   />
             <!--        
@@ -208,7 +211,7 @@
 
       <GridSplitter Grid.Column="4"  Grid.Row="4" Grid.RowSpan="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
 
-      <Button Grid.Column="5" Content="X" Height="32" Width="32" Click="onClose" IsCancel="True" VerticalAlignment="Top" HorizontalAlignment="Right" />
+      <Button Grid.Column="5" Content="X" Height="32" Width="32" Click="onClose" IsCancel="True" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="-13 -7"/>
 
     </Grid>
   </Border>
