@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using AAV.Sys.Helpers;
-using AAV.WPF.Ext;
+using CI.Standard.Lib.Extensions;
+using CI.Visual.Lib.Base;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +16,7 @@ using PowerShellLog.Db.DbModel;
 
 namespace PowerShellLog
 {
-  public partial class MainWindow : AAV.WPF.Base.WindowBase
+  public partial class MainWindow : WindowBase
   {
     readonly A0DbContext _dbx; // = A0DbContext.GetLclFl; // suspended till cost analysis is over:  .GetAzure;
     readonly IConfigurationRoot _cfg;
@@ -38,11 +38,11 @@ namespace PowerShellLog
       _cvsEmails = ((CollectionViewSource)(FindResource("cmdViewSource")));
       DataContext = this;
 
-      tbkVer.Text = VerHelper.CurVerStr("Net5");
+      //tbkVer.Text = CI.Standard.Lib.Helpers.VerHelper.CurVerStr("Net6");
 
       tbxSearch.Focus();
 
-      themeSelector1.ApplyTheme = ApplyTheme;
+      //themeSelector1.ApplyTheme = ApplyTheme;
       Topmost = Debugger.IsAttached;
 
 #if DI
@@ -88,9 +88,8 @@ namespace PowerShellLog
       if (Environment.CommandLine.Contains(_noui_updatedbonly))
         Close();
 
-      themeSelector1.SetCurTheme(Thm);
-
-      Bpr.BeepClk();
+      //themeSelector1.SetCurTheme(Thm);
+      //      Bpr.BeepClk();
     }
 
     async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_dbx, srcFileMode);

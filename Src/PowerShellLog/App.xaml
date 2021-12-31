@@ -8,10 +8,11 @@
       <ResourceDictionary.MergedDictionaries>
 
         <!--ap:Backup theme + designer's:-->
-        <ResourceDictionary Source="/AAV.WPF;component/ColorScheme/Theme.Color.Lite.Gray.xaml" />
+        <!--<ResourceDictionary Source="/CI.Visual.Lib;component/ColorScheme/Theme.Color.Lite.Gray.xaml"/>-->
+        <ResourceDictionary Source="/CI.Visual.Lib;component/ColorScheme/Theme.Color.Dark.Google.xaml" />
 
         <!--ap:Allows Style="{StaticResource WindowStyle_Aav0}"  (since it is on top of the visual tree over the Window) -->
-        <ResourceDictionary Source="/AAV.WPF;component/Base/BasicDefaultsLayout.xaml" />
+        <ResourceDictionary Source="/CI.Visual.Lib;component/Base/BasicDefaultsLayout.xaml" />
 
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>

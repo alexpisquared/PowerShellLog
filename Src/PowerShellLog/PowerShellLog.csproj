@@ -34,9 +34,7 @@
     <Compile Include="..\..\..\AAV.Shared\Src\AsLink\UI\HighlightableTextBlock.cs" Link="AsLink\HighlightableTextBlock.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.Sys\AAV.Sys.csproj" />
-    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.UI\AAV.UI.csproj" />
-    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.WPF\AAV.WPF.csproj" />
+    <ProjectReference Include="..\..\..\CI-Reimagined-Invention\Src\CI-RI\CI.Visual.Lib\CI.Visual.Lib.csproj" />
     <ProjectReference Include="..\DiStartupHelper\DiStartupHelper.csproj" />
     <ProjectReference Include="..\PowerShellLog.Db\PowerShellLog.Db.csproj" />
   </ItemGroup>

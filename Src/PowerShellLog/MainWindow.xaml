@@ -1,4 +1,4 @@
-﻿<lnk:WindowBase xmlns:lnk="clr-namespace:AAV.WPF.Base;assembly=AAV.WPF" x:Name="wnd" 
+﻿<lnk:WindowBase xmlns:lnk="clr-namespace:CI.Visual.Lib.Base;assembly=CI.Visual.Lib" x:Name="wnd" 
                 x:Class="PowerShellLog.MainWindow"        
                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"        
                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
@@ -6,7 +6,7 @@
                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"                
                 xmlns:stb="clr-namespace:AAV.Common" 
                 xmlns:Models="clr-namespace:PowerShellLog.Db.DbModel;assembly=PowerShellLog.Db" 
-                xmlns:View="clr-namespace:AAV.WPF.View;assembly=AAV.WPF"                 
+                xmlns:xui="clr-namespace:CI.Standard.Lib.Views;assembly=CI.Visual.Lib"                 
                 mc:Ignorable="d" 
                 d:DesignWidth="1200"
                 Style="{DynamicResource WindowStyle_Aav0}"
@@ -17,9 +17,8 @@
   <lnk:WindowBase.Resources>
     <ResourceDictionary >
       <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/AAV.WPF;component/Base/DataGrid.Base.xaml" />
-        <ResourceDictionary Source="/AAV.WPF;component/Base/BasicDefaultsLayout.xaml" />
-        <!--<ResourceDictionary Source="/AAV.WPF;component/ColorScheme/Theme.Color.Dark.Gray.xaml" />-->
+        <ResourceDictionary Source="/CI.Visual.Lib;component/Base/BasicDefaultsLayout.xaml" />
+        <ResourceDictionary Source="/CI.Visual.Lib;component/Base/DataGrid.Base.xaml" />
       </ResourceDictionary.MergedDictionaries>
       <DataTemplate x:Key="SampleListItemTemplate">
         <StackPanel>
@@ -106,7 +105,7 @@
       </StackPanel>
 
       <StackPanel Grid.ColumnSpan="6" Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0 8 40 0">
-        <View:ThemeSelectorUsrCtrl x:Name="themeSelector1"/>
+        <xui:ThemeSelectorUsrCtrl x:Name="themeSelector1"/>
         <TextBlock x:Name="tbkVer" Text="Ver" Margin="22 0 0 0" Foreground="#08f" />
       </StackPanel>
 

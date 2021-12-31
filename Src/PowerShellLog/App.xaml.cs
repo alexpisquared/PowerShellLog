@@ -1,4 +1,6 @@
-﻿
+﻿using CI.Standard.Lib.Extensions;
+//using CI.Visual.Lib.Helpers;
+
 namespace PowerShellLog;
 
 public partial class App : Application
@@ -51,7 +53,7 @@ public partial class App : Application
     }
     catch (Exception ex)
     {
-      ex.Pop(null, optl: "Shutting down the app ...");
+      ex.Pop((Window?)null, optl: "Shutting down the app ...");
       Current.Shutdown();
     }
   }
@@ -62,7 +64,7 @@ public partial class App : Application
 
     if (_serviceProvider is null) return;
 
-    Current.DispatcherUnhandledException += UnhandledExceptionHndlr.OnCurrentDispatcherUnhandledException;
+    Current.DispatcherUnhandledException += CI.Visual.Lib.Helpers.UnhandledExceptionHndlr.OnCurrentDispatcherUnhandledException;
     EventManager.RegisterClassHandler(typeof(TextBox), TextBox.GotFocusEvent, new RoutedEventHandler((s, re) => { (s as TextBox)?.SelectAll(); }));
 
     MainWindow = (Window)_serviceProvider.GetRequiredService<IAddChild>();

@@ -1,4 +1,4 @@
-﻿using AAV.WPF.Ext;
+﻿using CI.Standard.Lib.Extensions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PowerShellLog.Db.DbModel;
@@ -57,7 +57,7 @@ namespace PowerShellLog
         await mw.LoadTablesAsync(_dbx);
         mw.DoSearch("", _dbx, _cvsEmails, tbkTtl, _lgr);
       }
-      catch (Exception ex) { _lgr.LogError(ex, $""); ex.Pop(null); }
+      catch (Exception ex) { _lgr.LogError(ex, $""); ex.Pop((Window?)null); }
     }
   }
 }

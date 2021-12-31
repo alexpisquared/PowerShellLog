@@ -4,8 +4,6 @@ global using System.Reflection;
 global using System.Windows;
 global using System.Windows.Controls;
 global using System.Windows.Markup;
-global using AAV.WPF.Ext;
-global using AAV.WPF.Helpers;
 global using DiStartupHelper.Helpers;
 global using Microsoft.EntityFrameworkCore;
 global using Microsoft.Extensions.Configuration;
