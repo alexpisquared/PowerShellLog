@@ -48,7 +48,7 @@ namespace PowerShellLog
 
     async Task load()
     {
-      var lsw = Stopwatch.StartNew();
+      //var lsw = Stopwatch.StartNew();
       tbkInfo.Text = "//todo: _db.ServerDatabase()";
 
       try

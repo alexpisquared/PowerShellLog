@@ -92,7 +92,7 @@ namespace PowerShellLog
       //      Bpr.BeepClk();
     }
 
-    async Task<string> fsToDbLoad(string srcFileMode = "cc") => await new FsToDbLoader().LoadUpdateDbFromFs(_dbx, srcFileMode);
+    async Task<string> fsToDbLoad(string srcFileMode = "cc") => await FsToDbLoader.LoadUpdateDbFromFs(_dbx, srcFileMode);
     void doSearch(string match = "") => DoSearch(match, _dbx, _cvsEmails, tbkTtl, _lgr);
     public void DoSearch(string match, A0DbContext _db, CollectionViewSource _cvsEmails, TextBlock tbkTtl, Microsoft.Extensions.Logging.ILogger _logger)
     {
@@ -170,6 +170,8 @@ namespace PowerShellLog
     {
       Debug.WriteLine("onHide");
       System.Media.SystemSounds.Hand.Play();
+
+      ArgumentNullException.ThrowIfNull(_selectCmd, nameof(_selectCmd));
       _selectCmd.Note = _badCmd + _selectCmd.Note;
 
       doSearch(tbxSearch.Text); // assigns CVS => must be before the next line:
@@ -184,7 +186,7 @@ namespace PowerShellLog
     void onSelChd(object s, SelectionChangedEventArgs e)
     {
       Debug.WriteLine("onSelChd");
-      _selectCmd = e.AddedItems.Count > 0 ? (Cmd)e.AddedItems[0] : null;
+      _selectCmd = e.AddedItems.Count > 0 ? (Cmd?)e.AddedItems[0] : null;
       if (_selectCmd != null)
         dghist.ItemsSource = _dbx.Log.Local.Where(r => r.CommandId == _selectCmd.Id);
     }
