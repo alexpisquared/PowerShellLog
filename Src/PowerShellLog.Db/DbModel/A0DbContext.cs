@@ -1,5 +1,4 @@
-﻿using AAV.Sys.Helpers;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace PowerShellLog.Db.DbModel;
 

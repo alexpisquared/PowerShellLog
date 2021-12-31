@@ -26,7 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\AAV.Shared\Src\Net6.0\AAV.Sys\AAV.Sys.csproj" />
+    <ProjectReference Include="..\..\..\CI-Reimagined-Invention\Src\CI-RI\CI.Standard.Lib\CI.Standard.Lib.csproj" />
   </ItemGroup>
 
 </Project>
