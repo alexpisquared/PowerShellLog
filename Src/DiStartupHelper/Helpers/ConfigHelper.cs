@@ -1,5 +1,4 @@
-﻿
-namespace DiStartupHelper.Helpers;
+﻿namespace DiStartupHelper.Helpers;
 
 public class ConfigHelper
 {
