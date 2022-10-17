@@ -6,6 +6,10 @@ public class SeriLogHelper
   {
     Trace.WriteLine($"TrWL:/> {logFolder}\nTrWL:/> {logFolder.Replace("..", ".ERR..")}");
 
+#if !DEBUG
+    const string _template = "{Timestamp:HH:mm:ss.fff}\tMessage:{Message}\tLevel:{Level:w3}\tSourceContext:{SourceContext}{NewLine}{Exception}";
+#endif
+
     var loggerConfiguration =
       Debugger.IsAttached ?
         new LoggerConfiguration().WriteTo.Debug().MinimumLevel.Information() :
@@ -23,7 +27,6 @@ public class SeriLogHelper
               .WriteTo.File(path: @$"{logFolder.Replace("..", ".Er▄▀..")}", outputTemplate: _template, restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Error, rollingInterval: RollingInterval.Day)
             //.WriteTo.File(path: @$"{logFolder.Replace("..", ".11mb..").Replace(".log", ".json")}", restrictedToMinimumLevel: Serilog.Events.LogEventLevel.Verbose, rollOnFileSizeLimit: true, fileSizeLimitBytes: 11000000, formatter: new Serilog.Formatting.Json.JsonFormatter()) - useful only with log aggregators.
               ;
-  const string _template = "{Timestamp:HH:mm:ss.fff}\tMessage:{Message}\tLevel:{Level:w3}\tSourceContext:{SourceContext}{NewLine}{Exception}";
 #endif
 
       _ = builder.AddSerilog(loggerConfiguration.CreateLogger());

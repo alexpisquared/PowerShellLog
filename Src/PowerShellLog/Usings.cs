@@ -11,3 +11,13 @@ global using Microsoft.Extensions.DependencyInjection; // see the links below!!!
 global using Microsoft.Extensions.Logging;
 global using PowerShellLog.Db.DbModel;
 global using Serilog;
+global using CI.Standard.Lib.Extensions;
+global using CI.Visual.Lib.Extensions;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.Logging;
+global using PowerShellLog.Db.DbModel;
+global using System;
+global using System.Diagnostics;
+global using System.Threading.Tasks;
+global using System.Windows;
+global using System.Windows.Data;

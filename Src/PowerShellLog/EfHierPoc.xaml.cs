@@ -1,14 +1,4 @@
-﻿using CI.Standard.Lib.Extensions;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
-using PowerShellLog.Db.DbModel;
-using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Data;
-
-namespace PowerShellLog
+﻿namespace PowerShellLog
 {
   public partial class EfHierPoc : Window
   {
