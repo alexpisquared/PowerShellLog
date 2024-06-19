@@ -8,7 +8,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net7.0-windows</TargetFramework>
+    <TargetFramework>net8.0-windows8.0</TargetFramework>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>powershell.ico</ApplicationIcon>
     <Nullable>enable</Nullable>
